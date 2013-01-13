@@ -1,0 +1,106 @@
+package org.kingsteff.passwordsave;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Runo;
+
+public class DetailsDialog extends Window {
+
+	private String password;
+	private String login;
+
+	private Button close;
+
+	private Button openWebsite;
+
+	private TextArea passwordArea;
+	private TextField websiteField;
+	private TextField loginfield;
+	private AbsoluteLayout layout = new AbsoluteLayout();
+
+	public DetailsDialog(String password, String login, final String website) {
+		super();
+		this.password = password;
+		this.login = login;
+		websiteField = new TextField();
+		websiteField.setValue(website);
+		websiteField.setCaption("Website");
+		openWebsite = new Button();
+		openWebsite.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				if ((website != null) && (!(website.trim().equals("")))) {
+					PersonalpasssaveApplication
+							.getInstance()
+							.getWindow()
+							.open(new ExternalResource(website), "_blank", -1,
+									-1, Window.BORDER_NONE);
+
+				} else {
+					PersonalpasssaveApplication.getInstance().getWindow()
+							.showNotification("No Webiste URL found");
+				}
+			}
+
+		});
+		openWebsite.setIcon(new ThemeResource("../runo/icons/16/globe.png"));
+		openWebsite.addStyleName(Runo.BUTTON_SMALL);
+		close = new Button();
+		close.setCaption("close");
+		loginfield = new TextField();
+		loginfield.setCaption("Login:");
+		loginfield.setWidth("250px");
+		websiteField.setWidth("250px");
+		passwordArea = new TextArea();
+		passwordArea.setCaption("current Password:");
+		passwordArea.setWidth("250px");
+		passwordArea.setHeight("100px");
+
+		layout.addComponent(loginfield, "top:15.0px;left:10.0px;");
+		layout.addComponent(websiteField, "top:60.0px;left:10.0px;");
+		layout.addComponent(openWebsite, "top:60.0px;left:280.0px;");
+		layout.addComponent(passwordArea, "top:130.0px;left:10.0px;");
+		layout.addComponent(close, "top:250.0px;left:10.0px;");
+
+		setContent(layout);
+		passwordArea.setValue(password);
+		loginfield.setValue(login);
+		setWidth("400px");
+		setHeight("350px");
+
+	}
+
+	public Button getClose() {
+		return close;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public TextArea getPasswordArea() {
+		return passwordArea;
+	}
+
+	public TextField getLoginfield() {
+		return loginfield;
+	}
+
+}
