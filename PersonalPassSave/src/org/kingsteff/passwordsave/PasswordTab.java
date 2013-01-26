@@ -115,10 +115,12 @@ public class PasswordTab extends AbsoluteLayout implements
 		removeButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				if (currentChoosenID != null) {
+					Item item = passtable.getItem(currentChoosenID);
+					Property itemName = item.getItemProperty("Label");
 					PersonalpasssaveApplication
 							.getInstance()
 							.getBaseController()
-							.openYesNoDialog("Really delete password???",
+							.openYesNoDialog("Really delete password:"+itemName.getValue()+"???",
 									"Warning", self);
 				}
 			}

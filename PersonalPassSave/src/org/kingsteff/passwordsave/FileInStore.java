@@ -6,6 +6,33 @@ public class FileInStore {
 	private String filePath;
 	private String fileSize;
 	private String cipheredFileName;
+	private String description;
+	private String foldername;
+	private String parentFoldername;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getFoldername() {
+		return foldername;
+	}
+
+	public void setFoldername(String foldername) {
+		this.foldername = foldername;
+	}
+
+	public String getParentFoldername() {
+		return parentFoldername;
+	}
+
+	public void setParentFoldername(String parentFoldername) {
+		this.parentFoldername = parentFoldername;
+	}
 
 	public String getFileName() {
 		return fileName;
