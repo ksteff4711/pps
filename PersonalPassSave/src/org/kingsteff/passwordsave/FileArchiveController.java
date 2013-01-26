@@ -19,9 +19,15 @@ import com.vaadin.terminal.StreamResource;
 public class FileArchiveController {
 
 	public void addFileToList() {
-
+//ist noch im upLoadHandler
 	}
 
+	
+	public void removeFileFromArchive(String filePath, String realFIleName){
+		File file = new File(filePath+"/"+realFIleName);
+		file.delete();
+	}
+	
 	public ArrayList<FileInStore> getAllFilesForUser() {
 		ArrayList<FileInStore> userFiles = new ArrayList<FileInStore>();
 		File dir = new File(PersonalPassConstants.MAINDIR

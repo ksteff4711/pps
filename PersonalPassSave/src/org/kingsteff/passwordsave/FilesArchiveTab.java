@@ -38,6 +38,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		setWidth("1000px");
 		initTableAndButtons();
 		placeGuiItems();
+		self = this;
 	}
 
 	private void initTableAndButtons() {
@@ -56,7 +57,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		});
 
 		removeButton.addListener(new Button.ClickListener() {
-			private Object currentChoosenID;
+			
 
 			public void buttonClick(ClickEvent event) {
 				if (currentChoosenID != null) {
@@ -213,6 +214,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	@Override
 	public void valueChange(ValueChangeEvent event) {
+		System.out.println("-->>"+filesTable.getValue());
 		Object objectid = filesTable.getValue();
 		if (objectid != null) {
 			currentChoosenID = objectid;
@@ -222,8 +224,41 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	@Override
 	public void yesNoResultReturned(int status) {
-		// TODO Auto-generated method stub
+		if (status == BaseController.YESNO_DIALOG_NO) {
 
+		} else {
+			FileArchiveController control = new FileArchiveController();
+			Property itemName = null;
+			Property itemPath = null;
+			Object objectid = filesTable.getValue();
+			if (objectid != null) {
+				Item item = filesTable.getItem(objectid);
+				itemName = item.getItemProperty("FileName");
+				itemPath = item.getItemProperty("Filepath");
+				FileArchiveController archiveController = new FileArchiveController();
+				archiveController.removeFileFromArchive(itemPath.toString(),
+						itemName.toString());
+
+			} else {
+				PersonalpasssaveApplication
+						.getInstance()
+						.getWindow()
+						.showNotification("No FIle selected",
+								Notification.TYPE_ERROR_MESSAGE);
+
+			}
+			try {
+				control.removeFileFromArchive(itemPath.getValue().toString(),
+						itemName.getValue().toString());
+			} catch (Exception e) {
+				PersonalpasssaveApplication
+						.getInstance()
+						.getWindow()
+						.showNotification("Path or Filename is invalid",
+								Notification.TYPE_ERROR_MESSAGE);
+
+			}
+		}
 	}
 
 }
