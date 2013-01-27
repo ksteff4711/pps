@@ -3,6 +3,7 @@ package org.kingsteff.passwordsave;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,10 +20,46 @@ import com.vaadin.terminal.StreamResource;
 
 public class FileArchiveController {
 
-	public void addFileToList() {
+	public void addFileToList(String cipherFileName) {
 //ist noch im upLoadHandler
 	}
 
+	
+	
+	public void saveMetaDataForFile(String cipherFileName,FileInStore fileInStore){
+		ObjectMarshaller objectMarshaller = new ObjectMarshaller();
+		String xml = objectMarshaller.toXmlWithXStream(fileInStore);
+		writeFileToEncrytedFile(xml);
+	}
+	
+	
+
+	private void writeFileToEncrytedFile(String incoming) {
+		File dir = new File(PersonalPassConstants.MAINDIR
+				+ PersonalPassConstants.FILES_METADATADIR);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		try {
+			SecretKey key;
+			Cipher cipher;
+			cipher = Cipher.getInstance("DESede");
+			key = new SecretKeySpec("kgl51um6ad6598pbjnbz6xln".getBytes(),
+					"DESede");
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			CipherOutputStream cip = new CipherOutputStream(
+					new FileOutputStream(PersonalPassConstants.MAINDIR
+							+ PersonalPassConstants.USERS_SUBDIR
+							+ PersonalPassConstants.USERS_FILENAME), cipher);
+			cip.write(incoming.getBytes());
+			cip.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	public void removeFileFromArchive(String filePath, String realFIleName){
 		File file = new File(filePath+"/"+realFIleName);
