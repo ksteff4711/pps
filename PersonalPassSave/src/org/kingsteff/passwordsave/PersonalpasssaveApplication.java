@@ -13,6 +13,7 @@ public class PersonalpasssaveApplication extends Application implements
 	private BaseController baseController;
 	private LoginManager loginManager;
 	private PasswordManager passwordManager;
+	private FileArchiveController fileArchiveController;
 	private Window mainWindow;
 
 	@Override
@@ -23,6 +24,7 @@ public class PersonalpasssaveApplication extends Application implements
 		loginManager = LoginManager.getInstance();
 		baseController = new BaseController();
 		passwordManager = new PasswordManager();
+		fileArchiveController = new FileArchiveController();
 		LoginDialog dialog = new LoginDialog();
 		dialog.getMainLayout().setParent(null);
 		mainWindow.setContent(dialog.getMainLayout());
@@ -31,6 +33,15 @@ public class PersonalpasssaveApplication extends Application implements
 
 	public LoginManager getLoginManager() {
 		return loginManager;
+	}
+
+	public FileArchiveController getFileArchiveController() {
+		return fileArchiveController;
+	}
+
+	public void setFileArchiveController(
+			FileArchiveController fileArchiveController) {
+		this.fileArchiveController = fileArchiveController;
 	}
 
 	public void setLoginManager(LoginManager loginManager) {

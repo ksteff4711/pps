@@ -21,7 +21,6 @@ public class UpLoadHandler implements Upload.FailedListener,
 		Upload.SucceededListener, Upload.Receiver {
 
 	private File file;
-	private FileArchiveController archiveController = new FileArchiveController();
 
 	@Override
 	public OutputStream receiveUpload(String filename, String MIMEType) {
@@ -64,7 +63,31 @@ public class UpLoadHandler implements Upload.FailedListener,
 				+ event.getMIMEType() + "' uploaded.");
 		PersonalpasssaveApplication.getInstance().getBaseController()
 				.getWindow().removeFileUploadDialog();
+		FileArchiveController archiveController = PersonalpasssaveApplication
+				.getInstance().getFileArchiveController();
 
+		String path = PersonalPassConstants.MAINDIR
+				+ PersonalPassConstants.FILESTORE_SUBDIR
+				+ PasswordManager.getMd5Hash(PersonalpasssaveApplication
+						.getInstance().getBaseController().getCurrentUser());
+
+		FileInStore fileInStore = new FileInStore();
+		fileInStore.setCipheredFileName(PasswordManager.baseEncryptString(event
+				.getFilename()));
+		FileArchiveDialog fileArchiveDialog = PersonalpasssaveApplication
+				.getInstance().getBaseController().getWindow().getMainview()
+				.getArchiveTab().getFileArchiveDialog();
+		fileInStore.setDescription(fileArchiveDialog.getDescriptionInput()
+				.getValue() == null ? "" : fileArchiveDialog
+				.getDescriptionInput().getValue().toString());
+		fileInStore.setFilePath(path);
+		fileInStore
+				.setFoldername(fileArchiveDialog.getFolder().getValue() == null ? ""
+						: fileArchiveDialog.getFolder().getValue().toString());
+		fileInStore.setParentFoldername(fileArchiveDialog.getParentFolder()
+				.getValue() == null ? "" : fileArchiveDialog.getParentFolder()
+				.getValue().toString());
+		archiveController.saveMetaDataForFile(fileInStore);
 	}
 
 	@Override

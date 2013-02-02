@@ -92,4 +92,8 @@ public class PasswordInfos implements Comparable {
 		return ((PasswordInfos) o).getLabel().compareTo(getLabel()) * -1;
 	}
 
+	public String toString() {
+		return label;
+	}
+
 }

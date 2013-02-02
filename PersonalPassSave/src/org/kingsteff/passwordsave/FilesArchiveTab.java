@@ -2,7 +2,6 @@ package org.kingsteff.passwordsave;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -28,7 +27,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private Button removeButton;
 
 	private Button openFileButton;
-	
+
 	private Button editInfosButton;
 
 	private PpsDialogResultListener self;
@@ -36,6 +35,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private Window newFilesWindow;
 
 	private Object currentChoosenID;
+
+	private FileArchiveDialog fileArchiveDialog;
 
 	public FilesArchiveTab() {
 		setHeight("1000px");
@@ -60,14 +61,15 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			}
 
 		});
-		
+
 		editInfosButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				filesTable.setEditable(!filesTable.isEditable());
 				if (editInfosButton.getCaption().equals("Save")) {
 					saveChanges();
 				}
-				editInfosButton.setCaption((filesTable.isEditable() ? "Save" : "Edit"));
+				editInfosButton.setCaption((filesTable.isEditable() ? "Save"
+						: "Edit"));
 				if (filesTable.isEditable()) {
 					editInfosButton.setIcon(new ThemeResource(
 							"../pps/images/save.png"));
@@ -79,7 +81,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		});
 
 		removeButton.addListener(new Button.ClickListener() {
-			
 
 			public void buttonClick(ClickEvent event) {
 				if (currentChoosenID != null) {
@@ -90,7 +91,9 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 							.getInstance()
 							.getBaseController()
 							.openYesNoDialog(
-									"Really delete this file:"+itemName.getValue()+" ??? (CAN NOT BE UNDONE!!!)",
+									"Really delete this file:"
+											+ itemName.getValue()
+											+ " ??? (CAN NOT BE UNDONE!!!)",
 									"Warning", self);
 				}
 			}
@@ -115,12 +118,12 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		filesTable.setWidth("-1px");
 		filesTable.setHeight("600px");
 		filesTable.setEditable(false);
+		filesTable.setColumnCollapsingAllowed(true);
 		filesTable.setColumnCollapsed("Object", true);
 		loadDataForCurrentUser();
 
 		filesTable.setColumnCollapsingAllowed(true);
-		
-		
+
 		ItemClickEvent.ItemClickListener doubleClickListener = (new ItemClickEvent.ItemClickListener() {
 			private static final long serialVersionUID = 2068314108919135281L;
 
@@ -136,8 +139,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
-
-	
 	private void saveChanges() {
 		Collection itemIds = filesTable.getItemIds();
 		ArrayList beans = new ArrayList();
@@ -163,7 +164,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			Item item = filesTable.getItem(objectid);
 			Property itemName = item.getItemProperty("FileName");
 			Property itemPath = item.getItemProperty("Filepath");
-			FileArchiveController archiveController = new FileArchiveController();
+			FileArchiveController archiveController = PersonalpasssaveApplication
+					.getInstance().getFileArchiveController();
 			archiveController.openFileFromArchive(itemPath.toString(),
 					itemName.toString());
 		} else {
@@ -216,8 +218,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
-	
-
 	public void closeFileUploadDialog() {
 		PersonalpasssaveApplication.getInstance().getBaseController()
 				.removeWindow(newFilesWindow);
@@ -225,11 +225,11 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	}
 
 	protected void addItem() {
-		final FileArchiveDialog fileArchiveDialog = new FileArchiveDialog();
+		fileArchiveDialog = new FileArchiveDialog();
 		newFilesWindow = new Window("Put file to archive");
 		newFilesWindow.addComponent(fileArchiveDialog);
 		newFilesWindow.setWidth("500px");
-		newFilesWindow.setHeight("400px");
+		newFilesWindow.setHeight("450px");
 		newFilesWindow.setModal(true);
 
 		PersonalpasssaveApplication.getInstance().getBaseController()
@@ -241,18 +241,22 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
+	public FileArchiveDialog getFileArchiveDialog() {
+		return fileArchiveDialog;
+	}
+
 	private void loadDataForCurrentUser() {
 		filesTable.removeAllItems();
-		FileArchiveController control = new FileArchiveController();
+		FileArchiveController control = PersonalpasssaveApplication
+				.getInstance().getFileArchiveController();
 		ArrayList<FileInStore> allFilesForUser = control.getAllFilesForUser();
 		int counter = 0;
 
 		for (FileInStore fileInStore : allFilesForUser) {
-			filesTable.addItem(
-					new Object[] {
-							fileInStore.getDescription(),fileInStore.getFoldername(),
-					fileInStore.getFileName(), fileInStore.getFilePath(),
-							fileInStore.getFileSize(),fileInStore, }, new Integer(counter));
+			filesTable.addItem(new Object[] { fileInStore.getDescription(),
+					fileInStore.getFoldername(), fileInStore.getFileName(),
+					fileInStore.getFilePath(), fileInStore.getFileSize(),
+					fileInStore, }, new Integer(counter));
 			counter++;
 		}
 
@@ -260,7 +264,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	@Override
 	public void valueChange(ValueChangeEvent event) {
-		System.out.println("-->>"+filesTable.getValue());
+		System.out.println("-->>" + filesTable.getValue());
 		Object objectid = filesTable.getValue();
 		if (objectid != null) {
 			currentChoosenID = objectid;
@@ -273,7 +277,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		if (status == BaseController.YESNO_DIALOG_NO) {
 
 		} else {
-			FileArchiveController control = new FileArchiveController();
+			FileArchiveController control = PersonalpasssaveApplication
+					.getInstance().getFileArchiveController();
 			Property itemName = null;
 			Property itemPath = null;
 			Object objectid = filesTable.getValue();
@@ -281,7 +286,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 				Item item = filesTable.getItem(objectid);
 				itemName = item.getItemProperty("FileName");
 				itemPath = item.getItemProperty("Filepath");
-				FileArchiveController archiveController = new FileArchiveController();
+				FileArchiveController archiveController = PersonalpasssaveApplication
+						.getInstance().getFileArchiveController();
 				archiveController.removeFileFromArchive(itemPath.toString(),
 						itemName.toString());
 

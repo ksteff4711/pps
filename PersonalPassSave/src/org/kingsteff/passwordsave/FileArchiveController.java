@@ -21,20 +21,16 @@ import com.vaadin.terminal.StreamResource;
 public class FileArchiveController {
 
 	public void addFileToList(String cipherFileName) {
-//ist noch im upLoadHandler
+		// ist noch im upLoadHandler
 	}
 
-	
-	
-	public void saveMetaDataForFile(String cipherFileName,FileInStore fileInStore){
+	public void saveMetaDataForFile(FileInStore fileInStore) {
 		ObjectMarshaller objectMarshaller = new ObjectMarshaller();
 		String xml = objectMarshaller.toXmlWithXStream(fileInStore);
-		writeFileToEncrytedFile(xml);
+		writeFileToEncrytedFileInMetaDataFolder(xml);
 	}
-	
-	
 
-	private void writeFileToEncrytedFile(String incoming) {
+	private void writeFileToEncrytedFileInMetaDataFolder(String incoming) {
 		File dir = new File(PersonalPassConstants.MAINDIR
 				+ PersonalPassConstants.FILES_METADATADIR);
 		if (!dir.exists()) {
@@ -58,14 +54,12 @@ public class FileArchiveController {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-	public void removeFileFromArchive(String filePath, String realFIleName){
-		File file = new File(filePath+"/"+realFIleName);
+
+	public void removeFileFromArchive(String filePath, String realFIleName) {
+		File file = new File(filePath + "/" + realFIleName);
 		file.delete();
 	}
-	
+
 	public ArrayList<FileInStore> getAllFilesForUser() {
 		ArrayList<FileInStore> userFiles = new ArrayList<FileInStore>();
 		File dir = new File(PersonalPassConstants.MAINDIR

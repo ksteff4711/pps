@@ -21,15 +21,16 @@ public class DetailsDialog extends Window {
 
 	private TextArea passwordArea;
 	private TextField websiteField;
+	private TextArea commentArea;
 	private TextField loginfield;
 	private AbsoluteLayout layout = new AbsoluteLayout();
 
-	public DetailsDialog(String password, String login, final String website) {
+	public DetailsDialog(String password, String login, final String website,
+			String comment) {
 		super();
 		this.password = password;
 		this.login = login;
 		websiteField = new TextField();
-		websiteField.setValue(website);
 		websiteField.setCaption("Website");
 		openWebsite = new Button();
 		openWebsite.addListener(new Button.ClickListener() {
@@ -56,6 +57,12 @@ public class DetailsDialog extends Window {
 		loginfield.setCaption("Login:");
 		loginfield.setWidth("250px");
 		websiteField.setWidth("250px");
+
+		commentArea = new TextArea();
+		commentArea.setCaption("current Password:");
+		commentArea.setWidth("250px");
+		commentArea.setHeight("50px");
+
 		passwordArea = new TextArea();
 		passwordArea.setCaption("current Password:");
 		passwordArea.setWidth("250px");
@@ -64,12 +71,15 @@ public class DetailsDialog extends Window {
 		layout.addComponent(loginfield, "top:15.0px;left:10.0px;");
 		layout.addComponent(websiteField, "top:60.0px;left:10.0px;");
 		layout.addComponent(openWebsite, "top:60.0px;left:280.0px;");
-		layout.addComponent(passwordArea, "top:130.0px;left:10.0px;");
-		layout.addComponent(close, "top:250.0px;left:10.0px;");
+		layout.addComponent(commentArea, "top:120.0px;left:10.0px;");
+		layout.addComponent(passwordArea, "top:190.0px;left:10.0px;");
+		layout.addComponent(close, "top:310.0px;left:10.0px;");
 
 		setContent(layout);
 		passwordArea.setValue(password);
 		loginfield.setValue(login);
+		commentArea.setValue(comment);
+		websiteField.setValue(website);
 		setWidth("400px");
 		setHeight("350px");
 

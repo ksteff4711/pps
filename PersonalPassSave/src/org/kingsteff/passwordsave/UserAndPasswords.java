@@ -29,4 +29,7 @@ public class UserAndPasswords {
 		this.passwords = passwords;
 	}
 
+	public String toString() {
+		return ("User:" + login + " " + passwords.toString());
+	}
 }

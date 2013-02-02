@@ -35,4 +35,12 @@ public class BaseWindow extends AbsoluteLayout {
 		mainview.getArchiveTab().closeFileUploadDialog();
 	}
 
+	public MainView getMainview() {
+		return mainview;
+	}
+
+	public void setMainview(MainView mainview) {
+		this.mainview = mainview;
+	}
+
 }

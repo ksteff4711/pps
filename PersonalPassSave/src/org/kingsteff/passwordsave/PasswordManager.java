@@ -160,8 +160,9 @@ public class PasswordManager {
 			CipherOutputStream cip = new CipherOutputStream(
 					new FileOutputStream(fileName), cipher);
 			ObjectMarshaller marshaller = new ObjectMarshaller();
-			cip.write(marshaller.toXmlWithXStream(allPasswordsForUser)
-					.getBytes());
+			String xmlMarshall = marshaller
+					.toXmlWithXStream(allPasswordsForUser);
+			cip.write(xmlMarshall.getBytes());
 			cip.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
