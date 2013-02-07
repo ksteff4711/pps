@@ -1,7 +1,6 @@
 package org.kingsteff.passwordsave;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -33,10 +32,13 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private PpsDialogResultListener self;
 
 	private Window newFilesWindow;
+	private Window editingFilesWindow;
 
 	private Object currentChoosenID;
 
 	private FileArchiveDialog fileArchiveDialog;
+
+	private FileArchiveEditingDialog archiveEditingDialog;
 
 	public FilesArchiveTab() {
 		setHeight("1000px");
@@ -128,10 +130,12 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			private static final long serialVersionUID = 2068314108919135281L;
 
 			public void itemClick(ItemClickEvent event) {
-				// if (event.isDoubleClick())
+				if (event.isDoubleClick()) {
+					editingAction();
 
-				// }
+				}
 			}
+
 		});
 
 		filesTable.addListener(doubleClickListener);
@@ -139,21 +143,82 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
-	private void saveChanges() {
-		Collection itemIds = filesTable.getItemIds();
-		ArrayList beans = new ArrayList();
-		for (Object currentItem : itemIds) {
-			Item item = filesTable.getItem(currentItem);
-			Property itemPropertyID = item.getItemProperty("ID");
-			Property itemPropertyLabel = item.getItemProperty("Label");
-			Property itemPropertyLogin = item.getItemProperty("Login");
-			Property itemPropertyPassword = item.getItemProperty("Password");
-			Property itemPropertyCreationDate = item
-					.getItemProperty("Creation Date");
-			Property itemPropertyComment = item.getItemProperty("Comment");
-			Property itemPropertyWebsite = item.getItemProperty("Website");
+	private void openNewEditingDialog(FileInStore currentFile) {
+		archiveEditingDialog = new FileArchiveEditingDialog();
+		editingFilesWindow = new Window("Edit files Metadata");
+		editingFilesWindow.addComponent(archiveEditingDialog);
+		editingFilesWindow.setWidth("500px");
+		editingFilesWindow.setHeight("450px");
+		editingFilesWindow.setModal(true);
+		archiveEditingDialog.getParentFolder().setValue(
+				currentFile.getFoldername());
+		archiveEditingDialog.getFolder().setValue(
+				currentFile.getParentFoldername());
+		archiveEditingDialog.getDescriptionInput().setValue(
+				currentFile.getDescription());
+		archiveEditingDialog.getSave().addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				saveEditedItem(
+						archiveEditingDialog.getFolder().getValue() + "",
+						archiveEditingDialog.getParentFolder().getValue() + "",
+						archiveEditingDialog.getDescriptionInput().getValue()
+								+ "");
+				PersonalpasssaveApplication.getInstance().getBaseController()
+						.removeWindow(editingFilesWindow);
+			}
+
+		});
+		archiveEditingDialog.getCancel().addListener(
+				new Button.ClickListener() {
+					public void buttonClick(ClickEvent event) {
+						PersonalpasssaveApplication.getInstance()
+								.getBaseController()
+								.removeWindow(editingFilesWindow);
+					}
+
+				});
+		PersonalpasssaveApplication.getInstance().getBaseController()
+				.addWindow(editingFilesWindow);
+
+	}
+
+	private void saveEditedItem(String foldername, String parentFoldername,
+			String description) {
+		FileArchiveController archiveController = PersonalpasssaveApplication
+				.getInstance().getFileArchiveController();
+
+		if (currentChoosenID != null) {
+			FileInStore currentFile = null;
+			if (filesTable.getContainerProperty(currentChoosenID, "Object") != null) {
+				currentFile = (FileInStore) filesTable.getContainerProperty(
+						currentChoosenID, "Object").getValue();
+			}
+			if (currentFile != null) {
+				currentFile.setParentFoldername(parentFoldername);
+				currentFile.setFoldername(foldername);
+				currentFile.setDescription(description);
+				archiveController.saveMetaDataForFile(currentFile);
+			} else {
+				System.out.println("current file is null");
+			}
+		}
+	}
+
+	private void editingAction() {
+		FileInStore currentFile = null;
+		if (currentChoosenID != null) {
+
+			if (filesTable.getContainerProperty(currentChoosenID, "Object") != null) {
+				currentFile = (FileInStore) filesTable.getContainerProperty(
+						currentChoosenID, "Object").getValue();
+			}
+
+			openNewEditingDialog(currentFile);
 
 		}
+	}
+
+	private void saveChanges() {
 
 	}
 

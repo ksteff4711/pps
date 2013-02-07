@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import javax.crypto.spec.SecretKeySpec;
 import com.vaadin.terminal.StreamResource;
 
 public class FileArchiveController {
+
+	public ArrayList<FileInStore> metaInfos = new ArrayList<FileInStore>();
 
 	public void addFileToList(String cipherFileName) {
 		// ist noch im upLoadHandler
@@ -44,9 +47,12 @@ public class FileArchiveController {
 					"DESede");
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			CipherOutputStream cip = new CipherOutputStream(
-					new FileOutputStream(PersonalPassConstants.MAINDIR
-							+ PersonalPassConstants.USERS_SUBDIR
-							+ PersonalPassConstants.USERS_FILENAME), cipher);
+					new FileOutputStream(
+							PersonalPassConstants.MAINDIR
+									+ PersonalPassConstants.FILES_METADATADIR
+									+ System.currentTimeMillis()
+									+ PersonalPassConstants.FILEMETAINFOS_FILENAME_SUFFIX),
+					cipher);
 			cip.write(incoming.getBytes());
 			cip.close();
 		} catch (Exception e) {
@@ -70,7 +76,17 @@ public class FileArchiveController {
 		File[] listFiles = dir.listFiles();
 		if (listFiles != null) {
 			for (File file : listFiles) {
-				FileInStore newFileInStore = new FileInStore();
+				FileInStore newFileInStore = null;
+				try {
+					newFileInStore = getFileMetaInfosByCipheredFileName(file
+							.getName());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (newFileInStore == null) {
+					newFileInStore = new FileInStore();
+				}
 
 				newFileInStore.setFileName(PasswordManager
 						.baseDeCryptString(file.getName()));
@@ -81,6 +97,49 @@ public class FileArchiveController {
 			}
 		}
 		return userFiles;
+	}
+
+	private FileInStore getFileMetaInfosByCipheredFileName(
+			String cipheredFileName) throws Exception {
+		File dir = new File(PersonalPassConstants.MAINDIR
+				+ PersonalPassConstants.FILES_METADATADIR);
+		if (dir.exists()) {
+			File[] listFiles = dir.listFiles();
+			if (listFiles != null) {
+				for (File file : listFiles) {
+					FileInStore newFileInStore = new FileInStore();
+					CipherInputStream in;
+					OutputStream out;
+					Cipher cipher;
+					SecretKey key;
+					byte[] byteBuffer;
+					cipher = Cipher
+							.getInstance(PersonalPassConstants.ENCRYPTION_MODE);
+					key = new SecretKeySpec(
+							PersonalPassConstants.MAIN_SCHLUSSEL.getBytes(),
+							PersonalPassConstants.ENCRYPTION_MODE);
+					cipher.init(Cipher.DECRYPT_MODE, key);
+					in = new CipherInputStream(new FileInputStream(dir + "/"
+							+ file.getName()), cipher);
+					int read = 0;
+					StringBuffer buff = new StringBuffer();
+					while ((read = in.read()) != -1) {
+						buff.append((char) read);
+					}
+					ObjectMarshaller marshaller = new ObjectMarshaller();
+					Object fromXml = marshaller.fromXmlWithXStream(buff
+							.toString());
+					newFileInStore = (FileInStore) fromXml;
+					if (newFileInStore.getCipheredFileName().equals(
+							cipheredFileName)) {
+						return newFileInStore;
+					}
+				}
+			}
+		}
+		FileInStore fis = new FileInStore();
+		fis.setCipheredFileName(cipheredFileName);
+		return fis;
 	}
 
 	public void openFileFromArchive(String filePath, String realFIleName) {
