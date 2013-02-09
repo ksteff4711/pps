@@ -165,6 +165,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 								+ "");
 				PersonalpasssaveApplication.getInstance().getBaseController()
 						.removeWindow(editingFilesWindow);
+				loadDataForCurrentUser();
 			}
 
 		});
