@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -275,6 +276,55 @@ public class FileArchiveController {
 		public InputStream getStream() {
 			return getCipherInputputStream(new File(filePath));
 		}
+
+	}
+
+	public List<String> getAllRootFolderNames() throws Exception {
+		ArrayList<String> folderList = new ArrayList<String>();
+		File dir = new File(PersonalPassConstants.MAINDIR
+				+ PersonalPassConstants.FILES_METADATADIR
+				+ PasswordManager.getMd5Hash(PersonalpasssaveApplication
+						.getInstance().getBaseController().getCurrentUser()));
+		if (dir.exists()) {
+			File[] listFiles = dir.listFiles();
+			if (listFiles != null) {
+				for (File file : listFiles) {
+					FileInStore newFileInStore = new FileInStore();
+					CipherInputStream in;
+					OutputStream out;
+					Cipher cipher;
+					SecretKey key;
+					byte[] byteBuffer;
+					cipher = Cipher
+							.getInstance(PersonalPassConstants.ENCRYPTION_MODE);
+					key = new SecretKeySpec(
+							PersonalPassConstants.MAIN_SCHLUSSEL.getBytes(),
+							PersonalPassConstants.ENCRYPTION_MODE);
+					cipher.init(Cipher.DECRYPT_MODE, key);
+					in = new CipherInputStream(new FileInputStream(dir + "/"
+							+ file.getName()), cipher);
+					int read = 0;
+					StringBuffer buff = new StringBuffer();
+					while ((read = in.read()) != -1) {
+						buff.append((char) read);
+					}
+					ObjectMarshaller marshaller = new ObjectMarshaller();
+					Object fromXml = marshaller.fromXmlWithXStream(buff
+							.toString());
+					newFileInStore = (FileInStore) fromXml;
+					in.close();
+					System.out.println("folder search found:" + newFileInStore);
+					if (newFileInStore.getParentFoldername() != null) {
+						if (newFileInStore.getParentFoldername().trim()
+								.equals("")) {
+							folderList.add(newFileInStore.getFoldername());
+						}
+					}
+				}
+			}
+		}
+
+		return folderList;
 
 	}
 

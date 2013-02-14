@@ -1,6 +1,7 @@
 package org.kingsteff.passwordsave;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -9,15 +10,21 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Runo;
 
 public class FilesArchiveTab extends AbsoluteLayout implements
 		PpsDialogResultListener, ValueChangeListener {
+
+	private static final Object TREE_PROPERTY_CAPTION = "TREECAPTION";
+
+	private static final Object TREE_PROPERTY_FOLDERNAME = "FOLDERNAME";
 
 	private Table filesTable;
 
@@ -40,6 +47,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	private FileArchiveEditingDialog archiveEditingDialog;
 
+	private Tree folderTree;
+
 	public FilesArchiveTab() {
 		setHeight("1000px");
 		setWidth("1000px");
@@ -51,7 +60,14 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private void initTableAndButtons() {
 
 		filesTable = new Table();
-
+		folderTree = new Tree();
+		try {
+			initFolderTree();
+			fillFolderTree();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		addButton = new Button();
 		removeButton = new Button();
 		openFileButton = new Button();
@@ -141,6 +157,37 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		filesTable.addListener(doubleClickListener);
 		filesTable.addListener(this);
 
+	}
+
+	private void initFolderTree() throws Exception {
+		folderTree.addContainerProperty(TREE_PROPERTY_CAPTION, String.class,
+				null);
+		folderTree.addContainerProperty(TREE_PROPERTY_FOLDERNAME, String.class,
+				null);
+		folderTree.setItemCaptionPropertyId(TREE_PROPERTY_CAPTION);
+		folderTree
+				.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+		folderTree.setMultiSelect(true);
+
+	}
+
+	private void fillFolderTree() throws Exception {
+		List<String> allRootNodes = PersonalpasssaveApplication.getInstance()
+				.getFileArchiveController().getAllRootFolderNames();
+		int count = 0;
+		if (allRootNodes != null) {
+			if (!allRootNodes.isEmpty()) {
+				for (String currentRootNode : allRootNodes) {
+					count++;
+					Object itemIdRootNode = folderTree.addItem();
+					Item itemRoodNode = folderTree.getItem(itemIdRootNode);
+					itemRoodNode.getItemProperty(TREE_PROPERTY_CAPTION)
+							.setValue(currentRootNode);
+					System.out.println("Adding tree item:" + itemIdRootNode);
+				}
+				folderTree.setImmediate(true);
+			}
+		}
 	}
 
 	private void openNewEditingDialog(FileInStore currentFile) {
@@ -249,7 +296,11 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 		filesTable.setCaption("Your current files in archive");
 		filesTable.setImmediate(true);
-		addComponent(filesTable, "top:180.0px;left:20.0px;");
+		addComponent(filesTable, "top:180.0px;left:200.0px;");
+
+		folderTree.setCaption("Your archive folders");
+		folderTree.setImmediate(true);
+		addComponent(folderTree, "top:180.0px;left:5.0px;");
 
 		// addButton
 

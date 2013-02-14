@@ -66,4 +66,9 @@ public class FileInStore {
 		this.cipheredFileName = cipheredFileName;
 	}
 
+	public String toString() {
+		return "cn:" + getCipheredFileName() + " f:" + getFoldername() + " pf:"
+				+ getParentFoldername();
+	}
+
 }
