@@ -151,9 +151,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		editingFilesWindow.setHeight("450px");
 		editingFilesWindow.setModal(true);
 		archiveEditingDialog.getParentFolder().setValue(
-				currentFile.getFoldername());
-		archiveEditingDialog.getFolder().setValue(
 				currentFile.getParentFoldername());
+		archiveEditingDialog.getFolder().setValue(currentFile.getFoldername());
 		archiveEditingDialog.getDescriptionInput().setValue(
 				currentFile.getDescription());
 		archiveEditingDialog.getSave().addListener(new Button.ClickListener() {
@@ -187,13 +186,14 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			String description) {
 		FileArchiveController archiveController = PersonalpasssaveApplication
 				.getInstance().getFileArchiveController();
-
+		System.out.println("CurrentChosenID:" + currentChoosenID);
 		if (currentChoosenID != null) {
 			FileInStore currentFile = null;
 			if (filesTable.getContainerProperty(currentChoosenID, "Object") != null) {
 				currentFile = (FileInStore) filesTable.getContainerProperty(
 						currentChoosenID, "Object").getValue();
 			}
+			System.out.println("CurrentFile:" + currentFile);
 			if (currentFile != null) {
 				currentFile.setParentFoldername(parentFoldername);
 				currentFile.setFoldername(foldername);

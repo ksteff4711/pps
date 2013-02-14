@@ -17,49 +17,61 @@ public class BaseController {
 	private BaseWindow window;
 
 	public void loginPerformed(String username, String password) {
-		boolean checkUsernamePassword = PersonalpasssaveApplication
-				.getInstance().getLoginManager()
-				.checkUsernamePassword(username, password);
-		if (checkUsernamePassword) {
-			if (!username.equals("admin")) {
-				if (!PersonalpasssaveApplication.getInstance()
-						.getLoginManager()
-						.checkIfUserhasReachedMaxLoginTries(username)) {
+		if (!(username.trim().equals("") || password.trim().equals(""))) {
+			System.out.println("init login");
+			boolean checkUsernamePassword = PersonalpasssaveApplication
+					.getInstance().getLoginManager()
+					.checkUsernamePassword(username, password);
+			System.out.println("checkuser:" + checkUsernamePassword);
+			if (checkUsernamePassword) {
+				if (!username.equals("admin")) {
+					System.out.println("login as user");
+					if (!PersonalpasssaveApplication.getInstance()
+							.getLoginManager()
+							.checkIfUserhasReachedMaxLoginTries(username)) {
+						loginUser(username);
+					} else {
+						PersonalpasssaveApplication
+								.getInstance()
+								.getWindow()
+								.showNotification(
+										"The maximum number of login attempts has been reached!",
+										Notification.TYPE_ERROR_MESSAGE);
+					}
+				} else {
+					System.out.println("login as admin");
 					loginUser(username);
-				} else {
-					PersonalpasssaveApplication
-							.getInstance()
-							.getWindow()
-							.showNotification(
-									"The maximum number of login attempts has been reached!",
-									Notification.TYPE_ERROR_MESSAGE);
 				}
+
 			} else {
-				loginUser(username);
-			}
-
-		} else {
-			if (!username.equals("admin")) {
-				if (!PersonalpasssaveApplication.getInstance()
-						.getLoginManager()
-						.checkIfUserhasReachedMaxLoginTries(username)) {
-					PersonalpasssaveApplication.getInstance().getLoginManager()
-							.increaseLoginCount(username);
-					PersonalpasssaveApplication
-							.getInstance()
-							.getWindow()
-							.showNotification("Login incorrect!",
-									Notification.TYPE_ERROR_MESSAGE);
-				} else {
-					PersonalpasssaveApplication
-							.getInstance()
-							.getWindow()
-							.showNotification(
-									"The maximum number of login attempts has been reached!",
-									Notification.TYPE_ERROR_MESSAGE);
+				if (!username.equals("admin")) {
+					if (!PersonalpasssaveApplication.getInstance()
+							.getLoginManager()
+							.checkIfUserhasReachedMaxLoginTries(username)) {
+						PersonalpasssaveApplication.getInstance()
+								.getLoginManager().increaseLoginCount(username);
+						PersonalpasssaveApplication
+								.getInstance()
+								.getWindow()
+								.showNotification("Login incorrect!",
+										Notification.TYPE_ERROR_MESSAGE);
+					} else {
+						PersonalpasssaveApplication
+								.getInstance()
+								.getWindow()
+								.showNotification(
+										"The maximum number of login attempts has been reached!",
+										Notification.TYPE_ERROR_MESSAGE);
+					}
 				}
-			}
 
+			}
+		} else {
+			PersonalpasssaveApplication
+					.getInstance()
+					.getWindow()
+					.showNotification("Username or password must not be empty",
+							Notification.TYPE_ERROR_MESSAGE);
 		}
 	}
 

@@ -17,6 +17,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.io.FileDeleteStrategy;
+
 import com.vaadin.terminal.StreamResource;
 
 public class FileArchiveController {
@@ -28,14 +30,31 @@ public class FileArchiveController {
 	}
 
 	public void saveMetaDataForFile(FileInStore fileInStore) {
+		try {
+			deleteAllMetaDataIfExistentForFile(fileInStore);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ObjectMarshaller objectMarshaller = new ObjectMarshaller();
 		String xml = objectMarshaller.toXmlWithXStream(fileInStore);
 		writeFileToEncrytedFileInMetaDataFolder(xml);
 	}
 
+	private void deleteAllMetaDataIfExistentForFile(FileInStore fileInStore)
+			throws Exception {
+		File fileHandleForFileInStoreObject = getFileHandleForFileInStoreObject(fileInStore);
+		System.out.println("Trying to delete object:"
+				+ fileHandleForFileInStoreObject);
+		fileInStore = null;
+		FileDeleteStrategy.FORCE.delete(fileHandleForFileInStoreObject);
+	}
+
 	private void writeFileToEncrytedFileInMetaDataFolder(String incoming) {
 		File dir = new File(PersonalPassConstants.MAINDIR
-				+ PersonalPassConstants.FILES_METADATADIR);
+				+ PersonalPassConstants.FILES_METADATADIR
+				+ PasswordManager.getMd5Hash(PersonalpasssaveApplication
+						.getInstance().getBaseController().getCurrentUser()));
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
@@ -50,6 +69,12 @@ public class FileArchiveController {
 					new FileOutputStream(
 							PersonalPassConstants.MAINDIR
 									+ PersonalPassConstants.FILES_METADATADIR
+									+ PasswordManager
+											.getMd5Hash(PersonalpasssaveApplication
+													.getInstance()
+													.getBaseController()
+													.getCurrentUser())
+									+ "/"
 									+ System.currentTimeMillis()
 									+ PersonalPassConstants.FILEMETAINFOS_FILENAME_SUFFIX),
 					cipher);
@@ -94,6 +119,7 @@ public class FileArchiveController {
 				newFileInStore.setFileSize(file.length() / 1000 + " kilobytes");
 				newFileInStore.setCipheredFileName(file.getName());
 				userFiles.add(newFileInStore);
+
 			}
 		}
 		return userFiles;
@@ -102,7 +128,9 @@ public class FileArchiveController {
 	private FileInStore getFileMetaInfosByCipheredFileName(
 			String cipheredFileName) throws Exception {
 		File dir = new File(PersonalPassConstants.MAINDIR
-				+ PersonalPassConstants.FILES_METADATADIR);
+				+ PersonalPassConstants.FILES_METADATADIR
+				+ PasswordManager.getMd5Hash(PersonalpasssaveApplication
+						.getInstance().getBaseController().getCurrentUser()));
 		if (dir.exists()) {
 			File[] listFiles = dir.listFiles();
 			if (listFiles != null) {
@@ -130,16 +158,64 @@ public class FileArchiveController {
 					Object fromXml = marshaller.fromXmlWithXStream(buff
 							.toString());
 					newFileInStore = (FileInStore) fromXml;
+					in.close();
 					if (newFileInStore.getCipheredFileName().equals(
 							cipheredFileName)) {
 						return newFileInStore;
 					}
+
 				}
 			}
 		}
 		FileInStore fis = new FileInStore();
 		fis.setCipheredFileName(cipheredFileName);
 		return fis;
+	}
+
+	private File getFileHandleForFileInStoreObject(
+			FileInStore incomingFileInStrore) throws Exception {
+		File dir = new File(PersonalPassConstants.MAINDIR
+				+ PersonalPassConstants.FILES_METADATADIR
+				+ PasswordManager.getMd5Hash(PersonalpasssaveApplication
+						.getInstance().getBaseController().getCurrentUser()));
+		String cipheredFileName = incomingFileInStrore.getCipheredFileName();
+		if (dir.exists()) {
+			File[] listFiles = dir.listFiles();
+			if (listFiles != null) {
+				for (File file : listFiles) {
+					FileInStore newFileInStore = new FileInStore();
+					CipherInputStream in;
+					OutputStream out;
+					Cipher cipher;
+					SecretKey key;
+					byte[] byteBuffer;
+					cipher = Cipher
+							.getInstance(PersonalPassConstants.ENCRYPTION_MODE);
+					key = new SecretKeySpec(
+							PersonalPassConstants.MAIN_SCHLUSSEL.getBytes(),
+							PersonalPassConstants.ENCRYPTION_MODE);
+					cipher.init(Cipher.DECRYPT_MODE, key);
+					in = new CipherInputStream(new FileInputStream(dir + "/"
+							+ file.getName()), cipher);
+					int read = 0;
+					StringBuffer buff = new StringBuffer();
+					while ((read = in.read()) != -1) {
+						buff.append((char) read);
+					}
+					ObjectMarshaller marshaller = new ObjectMarshaller();
+					Object fromXml = marshaller.fromXmlWithXStream(buff
+							.toString());
+					newFileInStore = (FileInStore) fromXml;
+					in.close();
+					if (newFileInStore.getCipheredFileName().equals(
+							cipheredFileName)) {
+						return file;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public void openFileFromArchive(String filePath, String realFIleName) {

@@ -41,11 +41,11 @@ public class LoginManager {
 	}
 
 	public boolean checkUsernamePassword(String username, String password) {
+		System.out.println("checkLogin:" + username + " " + password);
 		String string = wrapper.userPasses.get(username);
 		if (string == null) {
 			return false;
 		} else {
-
 			return string.equals(password);
 		}
 	}
