@@ -10,7 +10,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
 
-public class DetailsDialog extends Window {
+public class PasswordDetailsDialog extends Window {
 
 	private String password;
 	private String login;
@@ -25,8 +25,8 @@ public class DetailsDialog extends Window {
 	private TextField loginfield;
 	private AbsoluteLayout layout = new AbsoluteLayout();
 
-	public DetailsDialog(String password, String login, final String website,
-			String comment) {
+	public PasswordDetailsDialog(String password, String login,
+			final String website, String comment) {
 		super();
 		this.password = password;
 		this.login = login;
@@ -55,17 +55,17 @@ public class DetailsDialog extends Window {
 		close.setCaption("close");
 		loginfield = new TextField();
 		loginfield.setCaption("Login:");
-		loginfield.setWidth("250px");
+		loginfield.setWidth("350px");
 		websiteField.setWidth("250px");
 
 		commentArea = new TextArea();
 		commentArea.setCaption("comment:");
-		commentArea.setWidth("250px");
+		commentArea.setWidth("350px");
 		commentArea.setHeight("50px");
 
 		passwordArea = new TextArea();
 		passwordArea.setCaption("current Password:");
-		passwordArea.setWidth("250px");
+		passwordArea.setWidth("350px");
 		passwordArea.setHeight("100px");
 
 		layout.addComponent(loginfield, "top:15.0px;left:10.0px;");
@@ -80,8 +80,8 @@ public class DetailsDialog extends Window {
 		loginfield.setValue(login);
 		commentArea.setValue(comment);
 		websiteField.setValue(website);
-		setWidth("400px");
-		setHeight("350px");
+		setWidth("450px");
+		setHeight("400px");
 
 	}
 

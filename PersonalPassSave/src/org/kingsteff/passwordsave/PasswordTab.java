@@ -517,7 +517,7 @@ public class PasswordTab extends AbsoluteLayout implements
 			Property itemPropertylogin = item.getItemProperty("Login");
 			Property itemPropertywebsite = item.getItemProperty("Website");
 			Property itemPropertycomment = item.getItemProperty("Comment");
-			final DetailsDialog detailsDialog = new DetailsDialog(
+			final PasswordDetailsDialog detailsDialog = new PasswordDetailsDialog(
 					itemPropertypassword.getValue().toString(),
 					itemPropertylogin.getValue().toString(),
 					itemPropertywebsite.getValue() != null ? itemPropertywebsite

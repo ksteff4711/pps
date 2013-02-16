@@ -318,7 +318,10 @@ public class FileArchiveController {
 					if (newFileInStore.getParentFoldername() != null) {
 						if (newFileInStore.getParentFoldername().trim()
 								.equals("")) {
-							folderList.add(newFileInStore.getFoldername());
+							if (!folderList.contains(newFileInStore
+									.getParentFoldername())) {
+								folderList.add(newFileInStore.getFoldername());
+							}
 						}
 					}
 				}

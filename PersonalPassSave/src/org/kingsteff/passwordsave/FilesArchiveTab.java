@@ -51,6 +51,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	private Object rootItemIdFolderTable;
 
+	private Button addFolder;
+
 	public FilesArchiveTab() {
 		setHeight("1000px");
 		setWidth("1000px");
@@ -74,10 +76,28 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		removeButton = new Button();
 		openFileButton = new Button();
 		editInfosButton = new Button();
+		addFolder = new Button();
+
+		addFolder.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				try {
+					// addFolder();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
 
 		addButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				addItem();
+				try {
+					addItem();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		});
@@ -160,6 +180,12 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
+	// private void addFolder() {
+	// FileArchiveController control = new FileArchiveController();
+	// control.addFolder();
+	//
+	// }
+
 	private void initFolderTree() throws Exception {
 		folderTree.addContainerProperty(TREE_PROPERTY_CAPTION, String.class,
 				null);
@@ -226,8 +252,10 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		}
 	}
 
-	private void openNewEditingDialog(FileInStore currentFile) {
-		archiveEditingDialog = new FileArchiveEditingDialog();
+	private void openNewEditingDialog(FileInStore currentFile) throws Exception {
+		FileArchiveController archiveController = new FileArchiveController();
+		archiveEditingDialog = new FileArchiveEditingDialog(
+				archiveController.getAllRootFolderNames());
 		editingFilesWindow = new Window("Edit files Metadata");
 		editingFilesWindow.addComponent(archiveEditingDialog);
 		editingFilesWindow.setWidth("500px");
@@ -307,7 +335,12 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 						currentChoosenID, "Object").getValue();
 			}
 
-			openNewEditingDialog(currentFile);
+			try {
+				openNewEditingDialog(currentFile);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 	}
@@ -394,8 +427,10 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		}
 	}
 
-	protected void addItem() {
-		fileArchiveDialog = new FileArchiveDialog();
+	private void addItem() throws Exception {
+		FileArchiveController archiveController = new FileArchiveController();
+		fileArchiveDialog = new FileArchiveDialog(
+				archiveController.getAllRootFolderNames());
 		newFilesWindow = new Window("Put file to archive");
 		newFilesWindow.addComponent(fileArchiveDialog);
 		newFilesWindow.setWidth("500px");

@@ -1,6 +1,9 @@
 package org.kingsteff.passwordsave;
 
+import java.util.List;
+
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
@@ -8,21 +11,26 @@ import com.vaadin.ui.TextField;
 public class FileArchiveEditingDialog extends GridLayout {
 
 	private TextField descriptioninput;
-	private TextField folder;
+	private ComboBox folder;
 	private TextField parentFolder;
 	private Button save;
 	private Button cancel;
+	private List<String> incomingFolderNames;
 
-	public FileArchiveEditingDialog() {
+	public FileArchiveEditingDialog(List<String> incomingFolderNames) {
+		this.incomingFolderNames = incomingFolderNames;
 		initUI();
 	}
 
 	private void initUI() {
 		descriptioninput = new TextField("Description");
 		descriptioninput.setWidth("250px");
-		folder = new TextField("Folder");
+		folder = new ComboBox("Folder", incomingFolderNames);
 		folder.setWidth("250px");
+		folder.setNullSelectionAllowed(false);
 		parentFolder = new TextField("Parent Folder");
+		parentFolder.setEnabled(false);
+		parentFolder.setValue(PersonalPassConstants.FILE_ROOT_NAME);
 		parentFolder.setWidth("250px");
 		save = new Button("Save");
 		cancel = new Button("Cancel");
@@ -45,11 +53,11 @@ public class FileArchiveEditingDialog extends GridLayout {
 		this.descriptioninput = descriptioninput;
 	}
 
-	public TextField getFolder() {
+	public ComboBox getFolder() {
 		return folder;
 	}
 
-	public void setFolder(TextField folder) {
+	public void setFolder(ComboBox folder) {
 		this.folder = folder;
 	}
 
