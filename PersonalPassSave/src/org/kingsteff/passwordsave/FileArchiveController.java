@@ -338,7 +338,7 @@ public class FileArchiveController {
 				if (fileInStore.getFoldername() != null) {
 					System.out.println("File " + fileInStore.getFileName()
 							+ " folder:" + fileInStore.getFoldername());
-					if (!fileInStore.getFoldername().equals(value)) {
+					if (fileInStore.getFoldername().equals(value)) {
 						resultList.add(fileInStore);
 					}
 				}
