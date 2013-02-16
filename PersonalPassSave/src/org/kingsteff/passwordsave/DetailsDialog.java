@@ -59,7 +59,7 @@ public class DetailsDialog extends Window {
 		websiteField.setWidth("250px");
 
 		commentArea = new TextArea();
-		commentArea.setCaption("current Password:");
+		commentArea.setCaption("comment:");
 		commentArea.setWidth("250px");
 		commentArea.setHeight("50px");
 
