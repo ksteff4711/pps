@@ -201,7 +201,7 @@ public class PasswordManager {
 	public String generateRandomPassword(int length, boolean withSpecialChars) {
 		String chars;
 		if (withSpecialChars) {
-			chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234657890abcdefghijklmnopqrstuvwxyz;:_-.,";
+			chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234657890abcdefghijklmnopqrstuvwxyz;:_-.,!§$%&()=?*+";
 		} else {
 			chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234657890abcdefghijklmnopqrstuvwxyz";
 		}

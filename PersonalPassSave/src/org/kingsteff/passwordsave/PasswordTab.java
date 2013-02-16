@@ -18,6 +18,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
@@ -53,6 +54,8 @@ public class PasswordTab extends AbsoluteLayout implements
 	private HorizontalLayout activateGenerator = null;
 	private Label activateGeneratorLabel;
 	private Button changePassword;
+
+	private CheckBox specialCharacters;
 
 	/*- VaadinEditorProperties={"grid":"RegularGrid,20","showGrid":true,"snapToGrid":true,"snapToObject":true,"movingGuides":false,"snappingDistance":10} */
 
@@ -129,9 +132,11 @@ public class PasswordTab extends AbsoluteLayout implements
 				try {
 					String string = randomPasswordLenghtTextfield.getValue()
 							.toString();
+					Boolean specialChars = Boolean.valueOf(specialCharacters
+							.getValue().toString());
 					randomPasswordTextfield.setValue(manager
 							.generateRandomPassword(Integer.parseInt(string),
-									false));
+									specialChars));
 				} catch (Exception e) {
 					PersonalpasssaveApplication
 							.getInstance()
@@ -155,6 +160,7 @@ public class PasswordTab extends AbsoluteLayout implements
 					generateRandomPassword.setVisible(true);
 					randomPasswordTextfield.setVisible(true);
 					randomPasswordLenghtTextfield.setVisible(true);
+					specialCharacters.setVisible(true);
 					addComponent(activateGenerator, "top:80.0px;left:20.0px;");
 				} else {
 					removeComponent(activateGenerator);
@@ -164,6 +170,7 @@ public class PasswordTab extends AbsoluteLayout implements
 					generateRandomPassword.setVisible(false);
 					randomPasswordTextfield.setVisible(false);
 					randomPasswordLenghtTextfield.setVisible(false);
+					specialCharacters.setVisible(false);
 					addComponent(activateGenerator, "top:80.0px;left:20.0px;");
 				}
 
@@ -434,6 +441,13 @@ public class PasswordTab extends AbsoluteLayout implements
 		randomPasswordLenghtTextfield.setImmediate(true);
 		addComponent(randomPasswordLenghtTextfield, "top:130.0px;left:320.0px;");
 		randomPasswordLenghtTextfield.setVisible(false);
+
+		specialCharacters = new CheckBox();
+		specialCharacters.setCaption("Special Chars?");
+		specialCharacters.setValue(Boolean.valueOf("true"));
+		specialCharacters.setImmediate(true);
+		addComponent(specialCharacters, "top:130.0px;left:365.0px;");
+		specialCharacters.setVisible(false);
 
 		activateGenerator = new HorizontalLayout();
 		activateGeneratorLabel = new Label();

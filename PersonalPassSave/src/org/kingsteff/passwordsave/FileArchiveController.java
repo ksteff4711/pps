@@ -219,17 +219,18 @@ public class FileArchiveController {
 		return null;
 	}
 
-	public void openFileFromArchive(String filePath, String realFIleName) {
+	public void openFileFromArchive(FileInStore filesMetaData) {
 
 		// Create an instance of our stream source.
 		StreamResource.StreamSource cipherResource = new MyCipherSource(
-				filePath);
+				filesMetaData.getFilePath());
 
 		// Create a resource that uses the stream source and give it a name.
 		// The constructor will automatically register the resource in
 		// the application.
 		StreamResource cipherresource = new StreamResource(cipherResource,
-				realFIleName, PersonalpasssaveApplication.getInstance());
+				filesMetaData.getFileName(),
+				PersonalpasssaveApplication.getInstance());
 
 		PersonalpasssaveApplication.getInstance().getMainWindow()
 				.open(cipherresource, "_blank");

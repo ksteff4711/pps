@@ -106,7 +106,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 				if (currentChoosenID != null) {
 					Item item = filesTable.getItem(currentChoosenID);
 					Property itemName = item.getItemProperty("FileName");
-					Property itemPath = item.getItemProperty("Filepath");
+
 					PersonalpasssaveApplication
 							.getInstance()
 							.getBaseController()
@@ -130,13 +130,12 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		filesTable.addContainerProperty("Description", String.class, null);
 		filesTable.addContainerProperty("Foldername", String.class, null);
 		filesTable.addContainerProperty("FileName", String.class, null);
-		filesTable.addContainerProperty("Filepath", String.class, null);
 		filesTable.addContainerProperty("FileSize", String.class, null);
 		filesTable.addContainerProperty("Object", FileInStore.class, null);
 		filesTable.setSelectable(true);
 		filesTable.setImmediate(true);
-		filesTable.setWidth("-1px");
-		filesTable.setHeight("600px");
+		filesTable.setWidth("500px");
+		filesTable.setHeight("500px");
 		filesTable.setEditable(false);
 		filesTable.setColumnCollapsingAllowed(true);
 		filesTable.setColumnCollapsed("Object", true);
@@ -198,7 +197,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		loadDataForCurrentUser(filesForFolder);
+		loadFilesForFolderFromFileSystem(filesForFolder);
 	}
 
 	private void fillFolderTree() throws Exception {
@@ -322,12 +321,11 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		Object objectid = filesTable.getValue();
 		if (objectid != null) {
 			Item item = filesTable.getItem(objectid);
-			Property itemName = item.getItemProperty("FileName");
-			Property itemPath = item.getItemProperty("Filepath");
+			Property itemMetaObject = item.getItemProperty("Object");
 			FileArchiveController archiveController = PersonalpasssaveApplication
 					.getInstance().getFileArchiveController();
-			archiveController.openFileFromArchive(itemPath.toString(),
-					itemName.toString());
+			archiveController.openFileFromArchive(((FileInStore) itemMetaObject
+					.getValue()));
 		} else {
 			PersonalpasssaveApplication
 					.getInstance()
@@ -417,7 +415,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		return fileArchiveDialog;
 	}
 
-	private void loadDataForCurrentUser(List<FileInStore> allFilesForUser) {
+	private void loadFilesForFolderFromFileSystem(
+			List<FileInStore> allFilesForUser) {
 		filesTable.removeAllItems();
 		// FileArchiveController control = PersonalpasssaveApplication
 		// .getInstance().getFileArchiveController();
@@ -429,8 +428,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			for (FileInStore fileInStore : allFilesForUser) {
 				filesTable.addItem(new Object[] { fileInStore.getDescription(),
 						fileInStore.getFoldername(), fileInStore.getFileName(),
-						fileInStore.getFilePath(), fileInStore.getFileSize(),
-						fileInStore, }, new Integer(counter));
+						fileInStore.getFileSize(), fileInStore, }, new Integer(
+						counter));
 				counter++;
 			}
 		}
