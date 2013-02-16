@@ -328,4 +328,19 @@ public class FileArchiveController {
 
 	}
 
+	public List<FileInStore> getAllFilesForSpecifiedForlder(String value)
+			throws Exception {
+		ArrayList<FileInStore> allFilesForUser = getAllFilesForUser();
+		if (!PersonalPassConstants.FILE_ROOT_NAME.equals(value)) {
+			for (FileInStore fileInStore : allFilesForUser) {
+				if (fileInStore.getFoldername() != null) {
+					if (!fileInStore.getFoldername().equals(value)) {
+						allFilesForUser.remove(fileInStore);
+					}
+				}
+			}
+		}
+		return allFilesForUser;
+	}
+
 }

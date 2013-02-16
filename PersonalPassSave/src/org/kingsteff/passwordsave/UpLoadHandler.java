@@ -77,16 +77,21 @@ public class UpLoadHandler implements Upload.FailedListener,
 		FileArchiveDialog fileArchiveDialog = PersonalpasssaveApplication
 				.getInstance().getBaseController().getWindow().getMainview()
 				.getArchiveTab().getFileArchiveDialog();
+
 		fileInStore.setDescription(fileArchiveDialog.getDescriptionInput()
 				.getValue() == null ? "" : fileArchiveDialog
 				.getDescriptionInput().getValue().toString());
+
 		fileInStore.setFilePath(path);
+
 		fileInStore
-				.setFoldername(fileArchiveDialog.getFolder().getValue() == null ? ""
+				.setFoldername(fileArchiveDialog.getFolder().getValue() == null ? PersonalPassConstants.FILE_ROOT_NAME
 						: fileArchiveDialog.getFolder().getValue().toString());
+
 		fileInStore.setParentFoldername(fileArchiveDialog.getParentFolder()
 				.getValue() == null ? "" : fileArchiveDialog.getParentFolder()
 				.getValue().toString());
+
 		archiveController.saveMetaDataForFile(fileInStore);
 	}
 

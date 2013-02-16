@@ -1,6 +1,6 @@
 package org.kingsteff.passwordsave;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.data.Item;
@@ -48,6 +48,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private FileArchiveEditingDialog archiveEditingDialog;
 
 	private Tree folderTree;
+
+	private Object rootItemIdFolderTable;
 
 	public FilesArchiveTab() {
 		setHeight("1000px");
@@ -138,7 +140,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		filesTable.setEditable(false);
 		filesTable.setColumnCollapsingAllowed(true);
 		filesTable.setColumnCollapsed("Object", true);
-		loadDataForCurrentUser();
+		showFilesForChoosenFolder(PersonalPassConstants.FILE_ROOT_NAME);
 
 		filesTable.setColumnCollapsingAllowed(true);
 
@@ -167,25 +169,60 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		folderTree.setItemCaptionPropertyId(TREE_PROPERTY_CAPTION);
 		folderTree
 				.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
-		folderTree.setMultiSelect(true);
+		folderTree.setMultiSelect(false);
+		folderTree.addListener(new Property.ValueChangeListener() {
 
+			public void valueChange(
+					com.vaadin.data.Property.ValueChangeEvent event) {
+				if (event.getProperty().getValue() != null) {
+					Object valueClickedID = event.getProperty().getValue();
+					Collection<?> itemIds = folderTree.getItemIds();
+					Item clickedNode = folderTree.getItem(valueClickedID);
+					String value = (String) clickedNode.getItemProperty(
+							TREE_PROPERTY_CAPTION).getValue();
+					showFilesForChoosenFolder(value);
+				}
+			}
+		});
+
+	}
+
+	private void showFilesForChoosenFolder(String value) {
+		System.out.println("opening folder:" + value);
+		List<FileInStore> filesForFolder = null;
+		try {
+			filesForFolder = PersonalpasssaveApplication.getInstance()
+					.getFileArchiveController()
+					.getAllFilesForSpecifiedForlder(value);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		loadDataForCurrentUser(filesForFolder);
 	}
 
 	private void fillFolderTree() throws Exception {
 		List<String> allRootNodes = PersonalpasssaveApplication.getInstance()
 				.getFileArchiveController().getAllRootFolderNames();
 		int count = 0;
+
+		rootItemIdFolderTable = folderTree.addItem();
+		Item itemRootdNode = folderTree.getItem(rootItemIdFolderTable);
+		itemRootdNode.getItemProperty(TREE_PROPERTY_CAPTION).setValue(
+				"All Files");
+
 		if (allRootNodes != null) {
 			if (!allRootNodes.isEmpty()) {
 				for (String currentRootNode : allRootNodes) {
 					count++;
-					Object itemIdRootNode = folderTree.addItem();
-					Item itemRoodNode = folderTree.getItem(itemIdRootNode);
-					itemRoodNode.getItemProperty(TREE_PROPERTY_CAPTION)
-							.setValue(currentRootNode);
-					System.out.println("Adding tree item:" + itemIdRootNode);
+					Object itemNodeId = folderTree.addItem();
+					Item treeItem = folderTree.getItem(itemNodeId);
+					treeItem.getItemProperty(TREE_PROPERTY_CAPTION).setValue(
+							currentRootNode);
+					folderTree.setParent(itemNodeId, rootItemIdFolderTable);
 				}
 				folderTree.setImmediate(true);
+				folderTree.expandItem(rootItemIdFolderTable);
 			}
 		}
 	}
@@ -211,7 +248,17 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 								+ "");
 				PersonalpasssaveApplication.getInstance().getBaseController()
 						.removeWindow(editingFilesWindow);
-				loadDataForCurrentUser();
+				Object choosenItemID = folderTree.getValue();
+				if (choosenItemID != null) {
+					Item choosenItem = folderTree.getItem(choosenItemID);
+					showFilesForChoosenFolder(choosenItem
+							.getItemProperty(TREE_PROPERTY_CAPTION).getValue()
+							.toString());
+				} else {
+
+					showFilesForChoosenFolder(PersonalPassConstants.FILE_ROOT_NAME);
+
+				}
 			}
 
 		});
@@ -270,7 +317,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
-	protected void openFile() {
+	private void openFile() {
 
 		Object objectid = filesTable.getValue();
 		if (objectid != null) {
@@ -298,7 +345,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		filesTable.setImmediate(true);
 		addComponent(filesTable, "top:180.0px;left:200.0px;");
 
-		folderTree.setCaption("Your archive folders");
 		folderTree.setImmediate(true);
 		addComponent(folderTree, "top:180.0px;left:5.0px;");
 
@@ -338,7 +384,16 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	public void closeFileUploadDialog() {
 		PersonalpasssaveApplication.getInstance().getBaseController()
 				.removeWindow(newFilesWindow);
-		loadDataForCurrentUser();
+
+		Object choosenItemID = folderTree.getValue();
+		if (choosenItemID != null) {
+			Item choosenItem = folderTree.getItem(choosenItemID);
+			showFilesForChoosenFolder(choosenItem
+					.getItemProperty(TREE_PROPERTY_CAPTION).getValue()
+					.toString());
+		} else {
+			showFilesForChoosenFolder(PersonalPassConstants.FILE_ROOT_NAME);
+		}
 	}
 
 	protected void addItem() {
@@ -362,19 +417,22 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		return fileArchiveDialog;
 	}
 
-	private void loadDataForCurrentUser() {
+	private void loadDataForCurrentUser(List<FileInStore> allFilesForUser) {
 		filesTable.removeAllItems();
-		FileArchiveController control = PersonalpasssaveApplication
-				.getInstance().getFileArchiveController();
-		ArrayList<FileInStore> allFilesForUser = control.getAllFilesForUser();
+		// FileArchiveController control = PersonalpasssaveApplication
+		// .getInstance().getFileArchiveController();
+		// ArrayList<FileInStore> allFilesForUser =
+		// control.getAllFilesForUser();
 		int counter = 0;
 
-		for (FileInStore fileInStore : allFilesForUser) {
-			filesTable.addItem(new Object[] { fileInStore.getDescription(),
-					fileInStore.getFoldername(), fileInStore.getFileName(),
-					fileInStore.getFilePath(), fileInStore.getFileSize(),
-					fileInStore, }, new Integer(counter));
-			counter++;
+		if (allFilesForUser != null) {
+			for (FileInStore fileInStore : allFilesForUser) {
+				filesTable.addItem(new Object[] { fileInStore.getDescription(),
+						fileInStore.getFoldername(), fileInStore.getFileName(),
+						fileInStore.getFilePath(), fileInStore.getFileSize(),
+						fileInStore, }, new Integer(counter));
+				counter++;
+			}
 		}
 
 	}

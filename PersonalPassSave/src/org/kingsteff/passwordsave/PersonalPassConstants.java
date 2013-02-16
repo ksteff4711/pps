@@ -13,5 +13,6 @@ public class PersonalPassConstants {
 	public static final String MAIN_SCHLUSSEL = "kgl51um6ad6598pbjnbz6xln";
 	public static final String STRING_SCHLUSSEL = "kgl51um6a123456bjnbz6xln";
 	public static final String ENCRYPTION_MODE = "DESede";
+	public static final String FILE_ROOT_NAME = "All Files";
 
 }
