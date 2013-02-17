@@ -10,7 +10,7 @@ import com.vaadin.ui.TextField;
 
 public class FilesAddFolderDialog extends GridLayout {
 
-	private TextField fodlerName;
+	private TextField folderName;
 	private ComboBox folder;
 	private Button save;
 	private Button cancel;
@@ -22,8 +22,8 @@ public class FilesAddFolderDialog extends GridLayout {
 	}
 
 	private void initUI() {
-		fodlerName = new TextField("New Foldername:");
-		fodlerName.setWidth("250px");
+		folderName = new TextField("New Foldername:");
+		folderName.setWidth("250px");
 		folder = new ComboBox("Parent Folder", incomingFolderNames);
 		folder.setWidth("250px");
 		folder.setNullSelectionAllowed(false);
@@ -31,6 +31,7 @@ public class FilesAddFolderDialog extends GridLayout {
 		save = new Button("Save");
 		cancel = new Button("Cancel");
 		this.setColumns(1);
+		this.addComponent(folderName);
 		this.addComponent(folder);
 		HorizontalLayout h1 = new HorizontalLayout();
 		h1.addComponent(save);
@@ -39,12 +40,12 @@ public class FilesAddFolderDialog extends GridLayout {
 		this.setSpacing(true);
 	}
 
-	public TextField getFodlerName() {
-		return fodlerName;
+	public TextField getFolderName() {
+		return folderName;
 	}
 
-	public void setFodlerName(TextField fodlerName) {
-		this.fodlerName = fodlerName;
+	public void setFolderName(TextField fodlerName) {
+		this.folderName = fodlerName;
 	}
 
 	public List<String> getIncomingFolderNames() {

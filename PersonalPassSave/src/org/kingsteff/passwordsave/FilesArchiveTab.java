@@ -181,14 +181,55 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	}
 
 	private void openAddFolderDialog() throws Exception {
-		FileArchiveController archiveController = new FileArchiveController();
-		FilesAddFolderDialog addFolderDialog = new FilesAddFolderDialog(
-				archiveController.getAllRootFolderNames());
+		final FileArchiveController archiveController = new FileArchiveController();
+		List<String> allRootFolderNames = archiveController
+				.getAllRootFolderNames();
+		allRootFolderNames.add(PersonalPassConstants.FILE_ROOT_NAME);
+		final FilesAddFolderDialog addFolderDialog = new FilesAddFolderDialog(
+				allRootFolderNames);
 		final Window addFolderWindow = new Window("Add new Folder");
 		addFolderWindow.addComponent(addFolderDialog);
 		addFolderWindow.setWidth("500px");
 		addFolderWindow.setHeight("450px");
 		addFolderWindow.setModal(true);
+
+		addFolderDialog.getSave().addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				if (addFolderDialog.getFolderName().getValue() != null) {
+					if (!addFolderDialog.getFolderName().getValue().toString()
+							.trim().equals("")) {
+						archiveController.addFolder(addFolderDialog
+								.getFolderName().getValue().toString(),
+								addFolderDialog.getFolder().getValue()
+										.toString());
+						refreshFilesForSelectedNodeOrRoot();
+						try {
+							fillFolderTree();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						PersonalpasssaveApplication.getInstance()
+								.getBaseController()
+								.removeWindow(addFolderWindow);
+
+					} else {
+						PersonalpasssaveApplication
+								.getInstance()
+								.getWindow()
+								.showNotification(
+										"Foldername must not be empty to save!");
+					}
+				} else {
+					PersonalpasssaveApplication
+							.getInstance()
+							.getWindow()
+							.showNotification(
+									"Foldername must not be empty to save!");
+				}
+			}
+
+		});
 
 		addFolderDialog.getCancel().addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -225,7 +266,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 				}
 			}
 		});
-		folderTree.setCaption("Your current Files and Folders");
+		folderTree.setCaption("Your current Folders");
+		folderTree.setValue(PersonalPassConstants.FILE_ROOT_NAME);
 	}
 
 	private void showFilesForChoosenFolder(String value) {
@@ -243,6 +285,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	}
 
 	private void fillFolderTree() throws Exception {
+		folderTree.removeAllItems();
 		List<String> allRootNodes = PersonalpasssaveApplication.getInstance()
 				.getFileArchiveController().getAllRootFolderNames();
 		int count = 0;
@@ -270,8 +313,10 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	private void openNewEditingDialog(FileInStore currentFile) throws Exception {
 		FileArchiveController archiveController = new FileArchiveController();
-		archiveEditingDialog = new FileArchiveEditingDialog(
-				archiveController.getAllRootFolderNames());
+		List<String> allRootFolderNames = archiveController
+				.getAllRootFolderNames();
+		allRootFolderNames.add(PersonalPassConstants.FILE_ROOT_NAME);
+		archiveEditingDialog = new FileArchiveEditingDialog(allRootFolderNames);
 		editingFilesWindow = new Window("Edit files Metadata");
 		editingFilesWindow.addComponent(archiveEditingDialog);
 		editingFilesWindow.setWidth("500px");
@@ -291,16 +336,12 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 								+ "");
 				PersonalpasssaveApplication.getInstance().getBaseController()
 						.removeWindow(editingFilesWindow);
-				Object choosenItemID = folderTree.getValue();
-				if (choosenItemID != null) {
-					Item choosenItem = folderTree.getItem(choosenItemID);
-					showFilesForChoosenFolder(choosenItem
-							.getItemProperty(TREE_PROPERTY_CAPTION).getValue()
-							.toString());
-				} else {
-
-					showFilesForChoosenFolder(PersonalPassConstants.FILE_ROOT_NAME);
-
+				refreshFilesForSelectedNodeOrRoot();
+				try {
+					fillFolderTree();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 
@@ -439,6 +480,10 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		PersonalpasssaveApplication.getInstance().getBaseController()
 				.removeWindow(newFilesWindow);
 
+		refreshFilesForSelectedNodeOrRoot();
+	}
+
+	private void refreshFilesForSelectedNodeOrRoot() {
 		Object choosenItemID = folderTree.getValue();
 		if (choosenItemID != null) {
 			Item choosenItem = folderTree.getItem(choosenItemID);

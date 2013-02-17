@@ -32,6 +32,8 @@ public class FileArchiveEditingDialog extends GridLayout {
 		parentFolder.setEnabled(false);
 		parentFolder.setValue(PersonalPassConstants.FILE_ROOT_NAME);
 		parentFolder.setWidth("250px");
+		parentFolder.setNullRepresentation("");
+		descriptioninput.setNullRepresentation("");
 		save = new Button("Save");
 		cancel = new Button("Cancel");
 		this.setColumns(1);

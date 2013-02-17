@@ -44,11 +44,13 @@ public class FileArchiveController {
 
 	private void deleteAllMetaDataIfExistentForFile(FileInStore fileInStore)
 			throws Exception {
-		File fileHandleForFileInStoreObject = getFileHandleForFileInStoreObject(fileInStore);
-		System.out.println("Trying to delete object:"
-				+ fileHandleForFileInStoreObject);
-		fileInStore = null;
-		FileDeleteStrategy.FORCE.delete(fileHandleForFileInStoreObject);
+		if (!fileInStore.getIsFolder()) {
+			File fileHandleForFileInStoreObject = getFileHandleForFileInStoreObject(fileInStore);
+			System.out.println("Trying to delete object:"
+					+ fileHandleForFileInStoreObject);
+			fileInStore = null;
+			FileDeleteStrategy.FORCE.delete(fileHandleForFileInStoreObject);
+		}
 	}
 
 	private void writeFileToEncrytedFileInMetaDataFolder(String incoming) {
@@ -160,9 +162,11 @@ public class FileArchiveController {
 							.toString());
 					newFileInStore = (FileInStore) fromXml;
 					in.close();
-					if (newFileInStore.getCipheredFileName().equals(
-							cipheredFileName)) {
-						return newFileInStore;
+					if (!newFileInStore.getIsFolder()) {
+						if (newFileInStore.getCipheredFileName().equals(
+								cipheredFileName)) {
+							return newFileInStore;
+						}
 					}
 
 				}
@@ -208,9 +212,11 @@ public class FileArchiveController {
 							.toString());
 					newFileInStore = (FileInStore) fromXml;
 					in.close();
-					if (newFileInStore.getCipheredFileName().equals(
-							cipheredFileName)) {
-						return file;
+					if (!newFileInStore.getIsFolder()) {
+						if (newFileInStore.getCipheredFileName().equals(
+								cipheredFileName)) {
+							return file;
+						}
 					}
 				}
 			}
@@ -315,11 +321,10 @@ public class FileArchiveController {
 					newFileInStore = (FileInStore) fromXml;
 					in.close();
 					System.out.println("folder search found:" + newFileInStore);
-					if (newFileInStore.getParentFoldername() != null) {
-						if (newFileInStore.getParentFoldername().trim()
-								.equals("")) {
+					if (newFileInStore.getFoldername() != null) {
+						if (!newFileInStore.getFoldername().trim().equals("")) {
 							if (!folderList.contains(newFileInStore
-									.getParentFoldername())) {
+									.getFoldername())) {
 								folderList.add(newFileInStore.getFoldername());
 							}
 						}
@@ -350,6 +355,14 @@ public class FileArchiveController {
 			return resultList;
 		}
 		return allFilesForUser;
+	}
+
+	public void addFolder(String string, String value) {
+		FileInStore fileInStore = new FileInStore();
+		fileInStore.setIsFolder(true);
+		fileInStore.setFoldername(string);
+		fileInStore.setParentFoldername(value);
+		saveMetaDataForFile(fileInStore);
 	}
 
 }
