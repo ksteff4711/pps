@@ -332,7 +332,7 @@ public class FileArchiveController {
 
 	}
 
-	public List<FileInStore> getAllFilesForSpecifiedForlder(String value)
+	public List<FileInStore> getAllFilesForSpecifiedFolder(String value)
 			throws Exception {
 		ArrayList<FileInStore> allFilesForUser = getAllFilesForUser();
 		ArrayList<FileInStore> resultList = new ArrayList<FileInStore>();
@@ -340,10 +340,10 @@ public class FileArchiveController {
 		if (!PersonalPassConstants.FILE_ROOT_NAME.equals(value)) {
 			for (FileInStore fileInStore : allFilesForUser) {
 				if (fileInStore.getFoldername() != null) {
-					System.out.println("File " + fileInStore.getFileName()
-							+ " folder:" + fileInStore.getFoldername());
-					if (fileInStore.getFoldername().equals(value)) {
-						resultList.add(fileInStore);
+					if (!fileInStore.getIsFolder()) {
+						if (fileInStore.getFoldername().equals(value)) {
+							resultList.add(fileInStore);
+						}
 					}
 				}
 			}

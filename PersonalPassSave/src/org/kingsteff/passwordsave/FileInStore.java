@@ -9,6 +9,15 @@ public class FileInStore {
 	private String description;
 	private String foldername;
 	private String parentFoldername;
+	private Boolean isFolder = false;
+
+	public Boolean getIsFolder() {
+		return isFolder;
+	}
+
+	public void setIsFolder(Boolean isFolder) {
+		this.isFolder = isFolder;
+	}
 
 	public String getDescription() {
 		return description;

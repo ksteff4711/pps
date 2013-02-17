@@ -81,7 +81,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		addFolder.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				try {
-					// addFolder();
+					openAddFolderDialog();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -180,11 +180,27 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
-	// private void addFolder() {
-	// FileArchiveController control = new FileArchiveController();
-	// control.addFolder();
-	//
-	// }
+	private void openAddFolderDialog() throws Exception {
+		FileArchiveController archiveController = new FileArchiveController();
+		FilesAddFolderDialog addFolderDialog = new FilesAddFolderDialog(
+				archiveController.getAllRootFolderNames());
+		final Window addFolderWindow = new Window("Add new Folder");
+		addFolderWindow.addComponent(addFolderDialog);
+		addFolderWindow.setWidth("500px");
+		addFolderWindow.setHeight("450px");
+		addFolderWindow.setModal(true);
+
+		addFolderDialog.getCancel().addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				PersonalpasssaveApplication.getInstance().getBaseController()
+						.removeWindow(addFolderWindow);
+			}
+
+		});
+
+		PersonalpasssaveApplication.getInstance().getBaseController()
+				.addWindow(addFolderWindow);
+	}
 
 	private void initFolderTree() throws Exception {
 		folderTree.addContainerProperty(TREE_PROPERTY_CAPTION, String.class,
@@ -209,7 +225,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 				}
 			}
 		});
-
+		folderTree.setCaption("Your current Files and Folders");
 	}
 
 	private void showFilesForChoosenFolder(String value) {
@@ -218,7 +234,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		try {
 			filesForFolder = PersonalpasssaveApplication.getInstance()
 					.getFileArchiveController()
-					.getAllFilesForSpecifiedForlder(value);
+					.getAllFilesForSpecifiedFolder(value);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -410,6 +426,13 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		addComponent(openFileButton, "top:40.0px;left:190.0px;");
 		// editButton
 
+		addFolder.setCaption("Add Folder");
+		addFolder.setImmediate(false);
+		addFolder.setWidth("-1px");
+		addFolder.setHeight("-1px");
+		addFolder.setIcon(new ThemeResource("../runo/icons/16/folder-add.png"));
+		addFolder.addStyleName(Runo.BUTTON_SMALL);
+		addComponent(addFolder, "top:40.0px;left:300.0px;");
 	}
 
 	public void closeFileUploadDialog() {
