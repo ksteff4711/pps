@@ -1,7 +1,6 @@
 package org.kingsteff.passwordsave;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -12,18 +11,22 @@ import com.vaadin.ui.themes.Runo;
 
 public class PasswordDetailsDialog extends Window {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String password;
 	private String login;
 
-	private Button close;
+	private final Button close;
 
-	private Button openWebsite;
+	private final Button openWebsite;
 
-	private TextArea passwordArea;
-	private TextField websiteField;
-	private TextArea commentArea;
-	private TextField loginfield;
-	private AbsoluteLayout layout = new AbsoluteLayout();
+	private final TextArea passwordArea;
+	private final TextField websiteField;
+	private final TextArea commentArea;
+	private final TextField loginfield;
+	private final AbsoluteLayout layout = new AbsoluteLayout();
 
 	public PasswordDetailsDialog(String password, String login,
 			final String website, String comment) {
@@ -33,18 +36,22 @@ public class PasswordDetailsDialog extends Window {
 		websiteField = new TextField();
 		websiteField.setCaption("Website");
 		openWebsite = new Button();
-		openWebsite.addListener(new Button.ClickListener() {
+		openWebsite.addClickListener(new Button.ClickListener() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
 			public void buttonClick(ClickEvent event) {
 				if ((website != null) && (!(website.trim().equals("")))) {
-					PersonalpasssaveApplication
-							.getInstance()
-							.getWindow()
-							.open(new ExternalResource(website), "_blank", -1,
-									-1, Window.BORDER_NONE);
+					PersonalpasssaveApplication.getInstance().getPage()
+							.open(website, "_blank");
 
 				} else {
-					PersonalpasssaveApplication.getInstance().getWindow()
-							.showNotification("No Webiste URL found");
+
+					new GeneralNotification("No Websiteentry URL found.", true,
+							GeneralNotification.ERROR_MESSAGE).show();
 				}
 			}
 

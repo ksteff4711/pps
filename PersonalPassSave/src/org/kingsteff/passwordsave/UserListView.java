@@ -41,26 +41,30 @@ public class UserListView extends CustomComponent {
 		initUserList();
 		// TODO add user code here
 
-		removeButton.addListener(new Button.ClickListener() {
+		removeButton.addClickListener(new Button.ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				removeUser();
 			}
 		});
 
-		addButton.addListener(new Button.ClickListener() {
+		addButton.addClickListener(new Button.ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				addUser();
 			}
 		});
 
-		closeButton.addListener(new Button.ClickListener() {
+		closeButton.addClickListener(new Button.ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				PersonalpasssaveApplication.getInstance().getBaseController()
 						.getWindow().showMainView();
 			}
 		});
 
-		resetPassword.addListener(new Button.ClickListener() {
+		resetPassword.addClickListener(new Button.ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				resetPasswordForUser();
 			}
@@ -74,10 +78,9 @@ public class UserListView extends CustomComponent {
 		if (value != null) {
 			PersonalpasssaveApplication.getInstance().getLoginManager()
 					.resetUsersPassword(value.toString());
-			PersonalpasssaveApplication
-					.getInstance()
-					.getWindow()
-					.showNotification("Password has been set to : TEST12342012");
+
+			new GeneralNotification("Password has been set to : TEST12342012",
+					true, GeneralNotification.ERROR_MESSAGE).show();
 		}
 
 	}
@@ -89,8 +92,9 @@ public class UserListView extends CustomComponent {
 				PersonalpasssaveApplication.getInstance().getLoginManager()
 						.removeUser(value.toString());
 			} else {
-				PersonalpasssaveApplication.getInstance().getWindow()
-						.showNotification("admin can not be deleted!!");
+
+				new GeneralNotification("admin can not be deleted!!", true,
+						GeneralNotification.ERROR_MESSAGE).show();
 			}
 		}
 		reloadUserTable();
@@ -112,12 +116,13 @@ public class UserListView extends CustomComponent {
 	private void newUserAction() {
 		final CreateNewUserDialog createNewUserDialog = new CreateNewUserDialog();
 		final Window newUserWindow = new Window("Create User");
-		newUserWindow.addComponent(createNewUserDialog);
+		newUserWindow.setContent(createNewUserDialog);
 		newUserWindow.setWidth("500px");
 		newUserWindow.setHeight("400px");
 		newUserWindow.setModal(true);
-		createNewUserDialog.getSave().addListener(new ClickListener() {
+		createNewUserDialog.getSave().addClickListener(new ClickListener() {
 
+			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
 					if (!createNewUserDialog.getTextfieldUsername().getValue()
@@ -143,22 +148,24 @@ public class UserListView extends CustomComponent {
 									.getBaseController()
 									.removeWindow(newUserWindow);
 						} else {
-							PersonalpasssaveApplication
-									.getInstance()
-									.getWindow()
-									.showNotification(
-											"Passwords not consistent!");
+
+							new GeneralNotification(
+									"Passwords not consistent!", true,
+									GeneralNotification.ERROR_MESSAGE).show();
+
 						}
 					}
 				} catch (Exception e) {
-					PersonalpasssaveApplication.getInstance().getWindow()
-							.showNotification("Creation failed");
+
+					new GeneralNotification("Creation failed", true,
+							GeneralNotification.ERROR_MESSAGE).show();
 					e.printStackTrace();
 				}
 			}
 		});
 		createNewUserDialog.getCancel().addListener(new ClickListener() {
 
+			@Override
 			public void buttonClick(ClickEvent event) {
 				PersonalpasssaveApplication.getInstance().getBaseController()
 						.removeWindow(newUserWindow);
@@ -185,7 +192,6 @@ public class UserListView extends CustomComponent {
 		mainLayout.setImmediate(false);
 		mainLayout.setWidth("100%");
 		mainLayout.setHeight("100%");
-		mainLayout.setMargin(false);
 
 		// top-level component properties
 		setWidth("100.0%");

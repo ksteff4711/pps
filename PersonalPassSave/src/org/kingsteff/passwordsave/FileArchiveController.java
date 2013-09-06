@@ -20,7 +20,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.FileDeleteStrategy;
 
-import com.vaadin.terminal.StreamResource;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class FileArchiveController {
 
@@ -235,11 +242,13 @@ public class FileArchiveController {
 		// The constructor will automatically register the resource in
 		// the application.
 		StreamResource cipherresource = new StreamResource(cipherResource,
-				filesMetaData.getFileName(),
-				PersonalpasssaveApplication.getInstance());
+				filesMetaData.getFileName());
 
-		PersonalpasssaveApplication.getInstance().getMainWindow()
-				.open(cipherresource, "_blank");
+		DownloadInfos infosWindows = new DownloadInfos(
+				filesMetaData.getFileName());
+		PersonalpasssaveApplication.getInstance().addWindow(infosWindows);
+		FileDownloader fileDownloader = new FileDownloader(cipherresource);
+		fileDownloader.extend(infosWindows.startDownload);
 	}
 
 	private CipherInputStream getCipherInputputStream(File file) {
@@ -273,7 +282,7 @@ public class FileArchiveController {
 
 	class MyCipherSource implements StreamResource.StreamSource {
 
-		private String filePath;
+		private final String filePath;
 
 		public MyCipherSource(String filePath) {
 			this.filePath = filePath;
@@ -363,6 +372,30 @@ public class FileArchiveController {
 		fileInStore.setFoldername(string);
 		fileInStore.setParentFoldername(value);
 		saveMetaDataForFile(fileInStore);
+	}
+
+	private class DownloadInfos extends Window {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1312312321111L;
+		VerticalLayout mainLayout = new VerticalLayout();
+		public Button startDownload;
+
+		public DownloadInfos(String message) {
+			mainLayout.addComponent(new Label("click to download:" + message));
+			startDownload.setCaption("click");
+			mainLayout.addComponent(startDownload);
+			startDownload.addClickListener(new ClickListener() {
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					close();
+
+				}
+			});
+		}
+
 	}
 
 }

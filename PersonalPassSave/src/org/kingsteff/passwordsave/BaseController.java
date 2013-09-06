@@ -2,12 +2,7 @@ package org.kingsteff.passwordsave;
 
 import java.util.UUID;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class BaseController {
 
@@ -25,18 +20,14 @@ public class BaseController {
 			System.out.println("checkuser:" + checkUsernamePassword);
 			if (checkUsernamePassword) {
 				if (!username.equals("admin")) {
-					System.out.println("login as user");
+					System.out.println("login as user" + username);
 					if (!PersonalpasssaveApplication.getInstance()
 							.getLoginManager()
 							.checkIfUserhasReachedMaxLoginTries(username)) {
 						loginUser(username);
 					} else {
-						PersonalpasssaveApplication
-								.getInstance()
-								.getWindow()
-								.showNotification(
-										"The maximum number of login attempts has been reached!",
-										Notification.TYPE_ERROR_MESSAGE);
+						com.vaadin.ui.Notification
+								.show("The maximum number of login attempts has been reached!");
 					}
 				} else {
 					System.out.println("login as admin");
@@ -50,36 +41,26 @@ public class BaseController {
 							.checkIfUserhasReachedMaxLoginTries(username)) {
 						PersonalpasssaveApplication.getInstance()
 								.getLoginManager().increaseLoginCount(username);
-						PersonalpasssaveApplication
-								.getInstance()
-								.getWindow()
-								.showNotification("Login incorrect!",
-										Notification.TYPE_ERROR_MESSAGE);
+						new GeneralNotification("Login incorrect", true,
+								GeneralNotification.ERROR_MESSAGE).show();
 					} else {
-						PersonalpasssaveApplication
-								.getInstance()
-								.getWindow()
-								.showNotification(
-										"The maximum number of login attempts has been reached!",
-										Notification.TYPE_ERROR_MESSAGE);
+						new GeneralNotification(
+								"The maximum number of login attempts has been reached!",
+								true, GeneralNotification.ERROR_MESSAGE).show();
 					}
 				}
 
 			}
 		} else {
-			PersonalpasssaveApplication
-					.getInstance()
-					.getWindow()
-					.showNotification("Username or password must not be empty",
-							Notification.TYPE_ERROR_MESSAGE);
+			new GeneralNotification("Username and Password must not be empty!",
+					true, GeneralNotification.ERROR_MESSAGE).show();
 		}
 	}
 
 	private void loginUser(String username) {
 		currentUser = username;
 		window = new BaseWindow();
-		PersonalpasssaveApplication.getInstance().getWindow()
-				.setContent(window);
+		PersonalpasssaveApplication.getInstance().setContent(window);
 		PersonalpasssaveApplication.getInstance().getLoginManager()
 				.removeUserAttempts(username);
 	}
@@ -101,53 +82,18 @@ public class BaseController {
 	}
 
 	public void addWindow(Window newUserWindow) {
-		PersonalpasssaveApplication.getInstance().getWindow()
-				.addWindow(newUserWindow);
+		PersonalpasssaveApplication.getInstance().addWindow(newUserWindow);
 
 	}
 
 	public void removeWindow(Window newUserWindow) {
-		PersonalpasssaveApplication.getInstance().getWindow()
-				.removeWindow(newUserWindow);
+		PersonalpasssaveApplication.getInstance().removeWindow(newUserWindow);
 
 	}
 
 	public static String generaterandomId() {
 		String uuid = UUID.randomUUID().toString();
 		return uuid;
-	}
-
-	public void openYesNoDialog(String message, String header,
-			final PpsDialogResultListener listener) {
-
-		final Window dialog = new Window(header);
-		dialog.setModal(true);
-		window.getWindow().addWindow(dialog);
-		Label text = new Label(message);
-		text.setContentMode(Label.CONTENT_XHTML);
-		dialog.addComponent(text);
-		HorizontalLayout tlayout = new HorizontalLayout();
-		tlayout.setSpacing(true);
-		tlayout.addComponent(new Button("Yes", new Button.ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				listener.yesNoResultReturned(YESNO_DIALOG_YES);
-				window.getWindow().removeWindow(dialog);
-
-			}
-		}));
-		tlayout.addComponent(new Button("No", new Button.ClickListener() {
-
-			public void buttonClick(ClickEvent event) {
-				listener.yesNoResultReturned(YESNO_DIALOG_NO);
-				window.getWindow().removeWindow(dialog);
-
-			}
-		}));
-		dialog.addComponent(tlayout);
-		dialog.setWidth("450px");
-		dialog.setHeight("220px");
 	}
 
 }

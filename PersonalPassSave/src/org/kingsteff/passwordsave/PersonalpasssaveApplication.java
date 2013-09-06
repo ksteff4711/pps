@@ -1,34 +1,29 @@
 package org.kingsteff.passwordsave;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.vaadin.annotations.Theme;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.UI;
 
-import com.vaadin.Application;
-import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
-import com.vaadin.ui.Window;
-
-public class PersonalpasssaveApplication extends Application implements
-		HttpServletRequestListener {
-	private static ThreadLocal<PersonalpasssaveApplication> threadLocal = new ThreadLocal<PersonalpasssaveApplication>();
+@Theme("pps")
+public class PersonalpasssaveApplication extends UI {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BaseController baseController;
 	private LoginManager loginManager;
 	private PasswordManager passwordManager;
 	private FileArchiveController fileArchiveController;
-	private Window mainWindow;
 
 	@Override
-	public void init() {
-		setTheme("pps");
-		mainWindow = new Window("Personalpasssave Application");
-
+	public void init(VaadinRequest request) {
 		loginManager = LoginManager.getInstance();
 		baseController = new BaseController();
 		passwordManager = new PasswordManager();
 		fileArchiveController = new FileArchiveController();
 		LoginDialog dialog = new LoginDialog();
 		dialog.getMainLayout().setParent(null);
-		mainWindow.setContent(dialog.getMainLayout());
-		setMainWindow(mainWindow);
+		setContent(dialog.getMainLayout());
 	}
 
 	public LoginManager getLoginManager() {
@@ -60,42 +55,13 @@ public class PersonalpasssaveApplication extends Application implements
 		this.baseController = baseController;
 	}
 
-	/**
-	 * @return the current application instance
-	 */
-	public static PersonalpasssaveApplication getCurrent() {
-		return threadLocal.get();
-	}
-
-	// Set the current application instance
-	public static void setInstance(PersonalpasssaveApplication application) {
-		if (getInstance() == null) {
-			threadLocal.set(application);
-		}
-	}
-
 	public static PersonalpasssaveApplication getInstance() {
-		return threadLocal.get();
+		return (PersonalpasssaveApplication) UI.getCurrent();
 	}
 
 	public BaseController getBaseController() {
 		// TODO Auto-generated method stub
 		return baseController;
-	}
-
-	public void onRequestStart(HttpServletRequest request,
-			HttpServletResponse response) {
-		PersonalpasssaveApplication.setInstance(this);
-	}
-
-	public void onRequestEnd(HttpServletRequest request,
-			HttpServletResponse response) {
-		threadLocal.remove();
-	}
-
-	public Window getWindow() {
-		// TODO Auto-generated method stub
-		return mainWindow;
 	}
 
 }

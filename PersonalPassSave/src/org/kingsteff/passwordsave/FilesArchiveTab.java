@@ -3,24 +3,31 @@ package org.kingsteff.passwordsave;
 import java.util.Collection;
 import java.util.List;
 
+import org.vaadin.dialogs.ConfirmDialog;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Runo;
 
 public class FilesArchiveTab extends AbsoluteLayout implements
-		PpsDialogResultListener, ValueChangeListener {
+		ValueChangeListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final Object TREE_PROPERTY_CAPTION = "TREECAPTION";
 
@@ -35,8 +42,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private Button openFileButton;
 
 	private Button editInfosButton;
-
-	private PpsDialogResultListener self;
 
 	private Window newFilesWindow;
 	private Window editingFilesWindow;
@@ -58,7 +63,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		setWidth("1000px");
 		initTableAndButtons();
 		placeGuiItems();
-		self = this;
 	}
 
 	private void initTableAndButtons() {
@@ -78,31 +82,32 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		editInfosButton = new Button();
 		addFolder = new Button();
 
-		addFolder.addListener(new Button.ClickListener() {
+		addFolder.addClickListener(new ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
 					openAddFolderDialog();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 
 		});
 
-		addButton.addListener(new Button.ClickListener() {
+		addButton.addClickListener(new ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
 					addItem();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 
 		});
 
-		editInfosButton.addListener(new Button.ClickListener() {
+		editInfosButton.addClickListener(new ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				filesTable.setEditable(!filesTable.isEditable());
 				if (editInfosButton.getCaption().equals("Save")) {
@@ -120,28 +125,35 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			}
 		});
 
-		removeButton.addListener(new Button.ClickListener() {
+		removeButton.addClickListener(new ClickListener() {
 
+			@Override
 			public void buttonClick(ClickEvent event) {
 				if (currentChoosenID != null) {
 					Item item = filesTable.getItem(currentChoosenID);
 					Property itemName = item.getItemProperty("FileName");
 
-					PersonalpasssaveApplication
-							.getInstance()
-							.getBaseController()
-							.openYesNoDialog(
-									"Really delete this file:"
-											+ itemName.getValue()
-											+ " ??? (CAN NOT BE UNDONE!!!)",
-									"Warning", self);
+					ConfirmDialog.show(
+							PersonalpasssaveApplication.getInstance(),
+							"Really delete this file:" + itemName.getValue()
+									+ " ??? (CAN NOT BE UNDONE!!!)",
+							new ConfirmDialog.Listener() {
+
+								@Override
+								public void onClose(ConfirmDialog dialog) {
+									if (dialog.isConfirmed()) {
+										removeFile();
+									}
+								}
+							});
 				}
 			}
 		});
 
-		openFileButton.addListener(new Button.ClickListener() {
+		openFileButton.addClickListener(new ClickListener() {
 			private Object currentChoosenID;
 
+			@Override
 			public void buttonClick(ClickEvent event) {
 				openFile();
 			}
@@ -166,6 +178,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		ItemClickEvent.ItemClickListener doubleClickListener = (new ItemClickEvent.ItemClickListener() {
 			private static final long serialVersionUID = 2068314108919135281L;
 
+			@Override
 			public void itemClick(ItemClickEvent event) {
 				if (event.isDoubleClick()) {
 					editingAction();
@@ -175,8 +188,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 		});
 
-		filesTable.addListener(doubleClickListener);
-		filesTable.addListener(this);
+		filesTable.addItemClickListener(doubleClickListener);
+		filesTable.addValueChangeListener(this);
 
 	}
 
@@ -188,12 +201,14 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		final FilesAddFolderDialog addFolderDialog = new FilesAddFolderDialog(
 				allRootFolderNames);
 		final Window addFolderWindow = new Window("Add new Folder");
-		addFolderWindow.addComponent(addFolderDialog);
+
+		addFolderWindow.setContent(addFolderDialog);
 		addFolderWindow.setWidth("500px");
 		addFolderWindow.setHeight("450px");
 		addFolderWindow.setModal(true);
 
-		addFolderDialog.getSave().addListener(new Button.ClickListener() {
+		addFolderDialog.getSave().addClickListener(new ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				if (addFolderDialog.getFolderName().getValue() != null) {
 					if (!addFolderDialog.getFolderName().getValue().toString()
@@ -214,24 +229,22 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 								.removeWindow(addFolderWindow);
 
 					} else {
-						PersonalpasssaveApplication
-								.getInstance()
-								.getWindow()
-								.showNotification(
-										"Foldername must not be empty to save!");
+						new GeneralNotification(
+								"Foldername must not be empty to save!", true,
+								GeneralNotification.ERROR_MESSAGE).show();
 					}
 				} else {
-					PersonalpasssaveApplication
-							.getInstance()
-							.getWindow()
-							.showNotification(
-									"Foldername must not be empty to save!");
+
+					new GeneralNotification(
+							"Foldername must not be empty to save!", true,
+							GeneralNotification.ERROR_MESSAGE).show();
 				}
 			}
 
 		});
 
-		addFolderDialog.getCancel().addListener(new Button.ClickListener() {
+		addFolderDialog.getCancel().addClickListener(new ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				PersonalpasssaveApplication.getInstance().getBaseController()
 						.removeWindow(addFolderWindow);
@@ -252,8 +265,9 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		folderTree
 				.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
 		folderTree.setMultiSelect(false);
-		folderTree.addListener(new Property.ValueChangeListener() {
+		folderTree.addValueChangeListener(new Property.ValueChangeListener() {
 
+			@Override
 			public void valueChange(
 					com.vaadin.data.Property.ValueChangeEvent event) {
 				if (event.getProperty().getValue() != null) {
@@ -318,7 +332,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		allRootFolderNames.add(PersonalPassConstants.FILE_ROOT_NAME);
 		archiveEditingDialog = new FileArchiveEditingDialog(allRootFolderNames);
 		editingFilesWindow = new Window("Edit files Metadata");
-		editingFilesWindow.addComponent(archiveEditingDialog);
+		editingFilesWindow.setContent(archiveEditingDialog);
 		editingFilesWindow.setWidth("500px");
 		editingFilesWindow.setHeight("450px");
 		editingFilesWindow.setModal(true);
@@ -327,7 +341,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		archiveEditingDialog.getFolder().setValue(currentFile.getFoldername());
 		archiveEditingDialog.getDescriptionInput().setValue(
 				currentFile.getDescription());
-		archiveEditingDialog.getSave().addListener(new Button.ClickListener() {
+		archiveEditingDialog.getSave().addClickListener(new ClickListener() {
+			@Override
 			public void buttonClick(ClickEvent event) {
 				saveEditedItem(
 						archiveEditingDialog.getFolder().getValue() + "",
@@ -346,15 +361,14 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			}
 
 		});
-		archiveEditingDialog.getCancel().addListener(
-				new Button.ClickListener() {
-					public void buttonClick(ClickEvent event) {
-						PersonalpasssaveApplication.getInstance()
-								.getBaseController()
-								.removeWindow(editingFilesWindow);
-					}
+		archiveEditingDialog.getCancel().addClickListener(new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				PersonalpasssaveApplication.getInstance().getBaseController()
+						.removeWindow(editingFilesWindow);
+			}
 
-				});
+		});
 		PersonalpasssaveApplication.getInstance().getBaseController()
 				.addWindow(editingFilesWindow);
 
@@ -417,11 +431,8 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 			archiveController.openFileFromArchive(((FileInStore) itemMetaObject
 					.getValue()));
 		} else {
-			PersonalpasssaveApplication
-					.getInstance()
-					.getWindow()
-					.showNotification("No FIle selected",
-							Notification.TYPE_ERROR_MESSAGE);
+			new GeneralNotification("No File selected", true,
+					GeneralNotification.ERROR_MESSAGE).show();
 		}
 
 	}
@@ -500,7 +511,7 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 		fileArchiveDialog = new FileArchiveDialog(
 				archiveController.getAllRootFolderNames());
 		newFilesWindow = new Window("Put file to archive");
-		newFilesWindow.addComponent(fileArchiveDialog);
+		newFilesWindow.setContent(fileArchiveDialog);
 		newFilesWindow.setWidth("500px");
 		newFilesWindow.setHeight("450px");
 		newFilesWindow.setModal(true);
@@ -521,10 +532,6 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 	private void loadFilesForFolderFromFileSystem(
 			List<FileInStore> allFilesForUser) {
 		filesTable.removeAllItems();
-		// FileArchiveController control = PersonalpasssaveApplication
-		// .getInstance().getFileArchiveController();
-		// ArrayList<FileInStore> allFilesForUser =
-		// control.getAllFilesForUser();
 		int counter = 0;
 
 		if (allFilesForUser != null) {
@@ -549,44 +556,33 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 	}
 
-	@Override
-	public void yesNoResultReturned(int status) {
-		if (status == BaseController.YESNO_DIALOG_NO) {
+	private void removeFile() {
+		FileArchiveController control = PersonalpasssaveApplication
+				.getInstance().getFileArchiveController();
+		Property itemName = null;
+		Property itemPath = null;
+		Object objectid = filesTable.getValue();
+		if (objectid != null) {
+			Item item = filesTable.getItem(objectid);
+			itemName = item.getItemProperty("FileName");
+			itemPath = item.getItemProperty("Filepath");
+			FileArchiveController archiveController = PersonalpasssaveApplication
+					.getInstance().getFileArchiveController();
+			archiveController.removeFileFromArchive(itemPath.toString(),
+					itemName.toString());
 
 		} else {
-			FileArchiveController control = PersonalpasssaveApplication
-					.getInstance().getFileArchiveController();
-			Property itemName = null;
-			Property itemPath = null;
-			Object objectid = filesTable.getValue();
-			if (objectid != null) {
-				Item item = filesTable.getItem(objectid);
-				itemName = item.getItemProperty("FileName");
-				itemPath = item.getItemProperty("Filepath");
-				FileArchiveController archiveController = PersonalpasssaveApplication
-						.getInstance().getFileArchiveController();
-				archiveController.removeFileFromArchive(itemPath.toString(),
-						itemName.toString());
+			new GeneralNotification("No file selcted!", true,
+					GeneralNotification.ERROR_MESSAGE).show();
 
-			} else {
-				PersonalpasssaveApplication
-						.getInstance()
-						.getWindow()
-						.showNotification("No FIle selected",
-								Notification.TYPE_ERROR_MESSAGE);
+		}
+		try {
+			control.removeFileFromArchive(itemPath.getValue().toString(),
+					itemName.getValue().toString());
+		} catch (Exception e) {
+			new GeneralNotification("Path or Filename invalid!", true,
+					GeneralNotification.ERROR_MESSAGE).show();
 
-			}
-			try {
-				control.removeFileFromArchive(itemPath.getValue().toString(),
-						itemName.getValue().toString());
-			} catch (Exception e) {
-				PersonalpasssaveApplication
-						.getInstance()
-						.getWindow()
-						.showNotification("Path or Filename is invalid",
-								Notification.TYPE_ERROR_MESSAGE);
-
-			}
 		}
 	}
 

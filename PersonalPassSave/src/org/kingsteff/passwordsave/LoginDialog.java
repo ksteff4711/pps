@@ -17,10 +17,10 @@ public class LoginDialog extends Window {
 
 	private AbsoluteLayout mainLayout = new AbsoluteLayout();
 
-	private AbsoluteLayout logincenterLayout = new AbsoluteLayout();
+	private final AbsoluteLayout logincenterLayout = new AbsoluteLayout();
 
 	public LoginDialog() {
-		setName("login");
+
 		initUI();
 	}
 
@@ -31,13 +31,16 @@ public class LoginDialog extends Window {
 		// login.setValue("admin");
 		password = new PasswordField();
 		// password.setValue("admin");
-		btnLogin.addListener(new Button.ClickListener() {
+		btnLogin.addClickListener(new Button.ClickListener() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
 			public void buttonClick(Button.ClickEvent event) {
-				PersonalpasssaveApplication
-						.getInstance()
-						.getBaseController()
-						.loginPerformed((String) login.getValue(),
-								(String) password.getValue());
+				PersonalpasssaveApplication.getInstance().getBaseController()
+						.loginPerformed(login.getValue(), password.getValue());
 			}
 
 		});
@@ -45,7 +48,6 @@ public class LoginDialog extends Window {
 		btnLogin.setClickShortcut(KeyCode.ENTER);
 
 		Label loginMessage = new Label("Personal Passwordsave");
-		Label loginLogin = new Label("");
 		loginMessage.setStyleName("big_header");
 
 		Label labelLoginName = new Label("Username");
@@ -61,7 +63,7 @@ public class LoginDialog extends Window {
 		labelpassword.setHeight("20px");
 		password.setWidth("150px");
 
-		Label labeldomainChooser = new Label("Domain wählen");
+		Label labeldomainChooser = new Label("Domain wï¿½hlen");
 		labeldomainChooser.setStyleName("label_general");
 		labeldomainChooser.setWidth("100px");
 		labeldomainChooser.setHeight("20px");
@@ -77,7 +79,7 @@ public class LoginDialog extends Window {
 		logincenterLayout.addComponent(btnLogin, "top:120px;left:10px");
 		mainLayout.addComponent(logincenterLayout, "left: 35%; right: 0%;"
 				+ "top: 30%; bottom: 0%;");
-		addComponent(mainLayout);
+		setContent(mainLayout);
 	}
 
 	public Layout getMainLayout() {
