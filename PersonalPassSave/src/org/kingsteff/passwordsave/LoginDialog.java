@@ -11,6 +11,10 @@ import com.vaadin.ui.Window;
 
 public class LoginDialog extends Window {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Button btnLogin = null;
 	private TextField loginTextField = null;
 	private PasswordField passwordTextfield = null;
