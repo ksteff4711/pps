@@ -4,7 +4,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-@Theme("pps")
+@Theme("dashboard")
 public class PersonalpasssaveApplication extends UI {
 	/**
 	 * 
@@ -22,8 +22,8 @@ public class PersonalpasssaveApplication extends UI {
 		passwordManager = new PasswordManager();
 		fileArchiveController = new FileArchiveController();
 		LoginDialog dialog = new LoginDialog();
-		dialog.getMainLayout().setParent(null);
-		setContent(dialog.getMainLayout());
+
+		addWindow(dialog);
 	}
 
 	public LoginManager getLoginManager() {

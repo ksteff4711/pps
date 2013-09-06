@@ -1,2 +1,0 @@
-# Module org.kingsteff.passwordsave.widgetset.PersonalpasssaveWidgetset
-# RPC service class, partial path of RPC policy file

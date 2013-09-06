@@ -1,8 +1,8 @@
 package org.kingsteff.passwordsave;
 
-import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.CssLayout;
 
-public class BaseWindow extends AbsoluteLayout {
+public class BaseWindow extends CssLayout {
 
 	private MainView mainview;
 	private UserListView listView;

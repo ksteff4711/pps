@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<display-name>PersonalPassSave</display-name>
 	<context-param>
 		<description>
@@ -9,18 +11,22 @@
 	</context-param>
 	<servlet>
 		<servlet-name>Personalpasssave Application</servlet-name>
-		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 		<init-param>
 			<description>
 			Vaadin application class to start</description>
 			<param-name>application</param-name>
 			<param-value>org.kingsteff.passwordsave.PersonalpasssaveApplication</param-value>
 		</init-param>
+		<!-- <init-param> -->
+		<!-- <description> -->
+		<!-- Application widgetset</description> -->
+		<!-- <param-name>widgetset</param-name> -->
+		<!-- <param-value>org.kingsteff.passwordsave.widgetset.PersonalpasssaveWidgetset</param-value> -->
+		<!-- </init-param> -->
 		<init-param>
-			<description>
-			Application widgetset</description>
-			<param-name>widgetset</param-name>
-			<param-value>org.kingsteff.passwordsave.widgetset.PersonalpasssaveWidgetset</param-value>
+			<param-name>UI</param-name>
+			<param-value>org.kingsteff.passwordsave.PersonalpasssaveApplication</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
