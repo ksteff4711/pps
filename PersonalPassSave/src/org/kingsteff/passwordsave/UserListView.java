@@ -80,7 +80,9 @@ public class UserListView extends CustomComponent {
 					.resetUsersPassword(value.toString());
 
 			new GeneralNotification("Password has been set to : TEST12342012",
-					true, GeneralNotification.ERROR_MESSAGE).show();
+					true, GeneralNotification.ERROR_MESSAGE,
+					PersonalpasssaveApplication.getInstance()
+							.getBaseController()).show();
 		}
 
 	}
@@ -94,7 +96,9 @@ public class UserListView extends CustomComponent {
 			} else {
 
 				new GeneralNotification("admin can not be deleted!!", true,
-						GeneralNotification.ERROR_MESSAGE).show();
+						GeneralNotification.ERROR_MESSAGE,
+						PersonalpasssaveApplication.getInstance()
+								.getBaseController()).show();
 			}
 		}
 		reloadUserTable();
@@ -151,14 +155,18 @@ public class UserListView extends CustomComponent {
 
 							new GeneralNotification(
 									"Passwords not consistent!", true,
-									GeneralNotification.ERROR_MESSAGE).show();
+									GeneralNotification.ERROR_MESSAGE,
+									PersonalpasssaveApplication.getInstance()
+											.getBaseController()).show();
 
 						}
 					}
 				} catch (Exception e) {
 
 					new GeneralNotification("Creation failed", true,
-							GeneralNotification.ERROR_MESSAGE).show();
+							GeneralNotification.ERROR_MESSAGE,
+							PersonalpasssaveApplication.getInstance()
+									.getBaseController()).show();
 					e.printStackTrace();
 				}
 			}

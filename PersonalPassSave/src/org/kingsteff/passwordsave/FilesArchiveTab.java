@@ -231,13 +231,17 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 					} else {
 						new GeneralNotification(
 								"Foldername must not be empty to save!", true,
-								GeneralNotification.ERROR_MESSAGE).show();
+								GeneralNotification.ERROR_MESSAGE,
+								PersonalpasssaveApplication.getInstance()
+										.getBaseController()).show();
 					}
 				} else {
 
 					new GeneralNotification(
 							"Foldername must not be empty to save!", true,
-							GeneralNotification.ERROR_MESSAGE).show();
+							GeneralNotification.ERROR_MESSAGE,
+							PersonalpasssaveApplication.getInstance()
+									.getBaseController()).show();
 				}
 			}
 
@@ -432,7 +436,9 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 					.getValue()));
 		} else {
 			new GeneralNotification("No File selected", true,
-					GeneralNotification.ERROR_MESSAGE).show();
+					GeneralNotification.ERROR_MESSAGE,
+					PersonalpasssaveApplication.getInstance()
+							.getBaseController()).show();
 		}
 
 	}
@@ -573,7 +579,9 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 
 		} else {
 			new GeneralNotification("No file selcted!", true,
-					GeneralNotification.ERROR_MESSAGE).show();
+					GeneralNotification.ERROR_MESSAGE,
+					PersonalpasssaveApplication.getInstance()
+							.getBaseController()).show();
 
 		}
 		try {
@@ -581,7 +589,9 @@ public class FilesArchiveTab extends AbsoluteLayout implements
 					itemName.getValue().toString());
 		} catch (Exception e) {
 			new GeneralNotification("Path or Filename invalid!", true,
-					GeneralNotification.ERROR_MESSAGE).show();
+					GeneralNotification.ERROR_MESSAGE,
+					PersonalpasssaveApplication.getInstance()
+							.getBaseController()).show();
 
 		}
 	}

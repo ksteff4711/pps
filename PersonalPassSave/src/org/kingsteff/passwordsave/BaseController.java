@@ -2,6 +2,7 @@ package org.kingsteff.passwordsave;
 
 import java.util.UUID;
 
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class BaseController {
@@ -10,6 +11,11 @@ public class BaseController {
 	protected static final int YESNO_DIALOG_NO = 0;
 	private String currentUser;
 	private BaseWindow window;
+
+	public BaseController() {
+		PersonalpasssaveApplication.getInstance().setContent(
+				new VerticalLayout());
+	}
 
 	public void loginPerformed(String username, String password) {
 		if (!(username.trim().equals("") || password.trim().equals(""))) {
@@ -41,19 +47,21 @@ public class BaseController {
 							.checkIfUserhasReachedMaxLoginTries(username)) {
 						PersonalpasssaveApplication.getInstance()
 								.getLoginManager().increaseLoginCount(username);
+
 						new GeneralNotification("Login incorrect", true,
-								GeneralNotification.ERROR_MESSAGE).show();
+								GeneralNotification.ERROR_MESSAGE, this).show();
 					} else {
 						new GeneralNotification(
 								"The maximum number of login attempts has been reached!",
-								true, GeneralNotification.ERROR_MESSAGE).show();
+								true, GeneralNotification.ERROR_MESSAGE, this)
+								.show();
 					}
 				}
 
 			}
 		} else {
 			new GeneralNotification("Username and Password must not be empty!",
-					true, GeneralNotification.ERROR_MESSAGE).show();
+					true, GeneralNotification.ERROR_MESSAGE, this).show();
 		}
 	}
 
@@ -63,6 +71,16 @@ public class BaseController {
 		PersonalpasssaveApplication.getInstance().setContent(window);
 		PersonalpasssaveApplication.getInstance().getLoginManager()
 				.removeUserAttempts(username);
+	}
+
+	public void notificationReturned() {
+		PersonalpasssaveApplication.getInstance().addWindow(
+				PersonalpasssaveApplication.getInstance().getDialog());
+	}
+
+	public void beforShowMessage() {
+		PersonalpasssaveApplication.getInstance().removeWindow(
+				PersonalpasssaveApplication.getInstance().getDialog());
 	}
 
 	public String getCurrentUser() {

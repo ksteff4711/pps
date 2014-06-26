@@ -101,8 +101,8 @@ public class LoginDialog extends Window {
 		setContent(logincenterLayout);
 		this.setStyleName("centerLayout");
 		this.center();
-		this.setModal(true);
-		this.setClosable(false);
+		this.setModal(false);
+		this.setClosable(true);
 	}
 
 	public void changeMessageInLoginDialog(String message) {

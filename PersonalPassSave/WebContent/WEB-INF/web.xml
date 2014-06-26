@@ -12,18 +12,18 @@
 	<servlet>
 		<servlet-name>Personalpasssave Application</servlet-name>
 		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+<!-- 		<init-param> -->
+<!-- 			<description> -->
+<!-- 			Vaadin application class to start</description> -->
+<!-- 			<param-name>application</param-name> -->
+<!-- 			<param-value>org.kingsteff.passwordsave.PersonalpasssaveApplication</param-value> -->
+<!-- 		</init-param> -->
 		<init-param>
-			<description>
-			Vaadin application class to start</description>
-			<param-name>application</param-name>
-			<param-value>org.kingsteff.passwordsave.PersonalpasssaveApplication</param-value>
+		<description>
+		Application widgetset</description>
+		<param-name>widgetset</param-name>
+		<param-value>org.kingsteff.passwordsave.widgetset.PersonalpasssaveWidgetset</param-value>
 		</init-param>
-		<!-- <init-param> -->
-		<!-- <description> -->
-		<!-- Application widgetset</description> -->
-		<!-- <param-name>widgetset</param-name> -->
-		<!-- <param-value>org.kingsteff.passwordsave.widgetset.PersonalpasssaveWidgetset</param-value> -->
-		<!-- </init-param> -->
 		<init-param>
 			<param-name>UI</param-name>
 			<param-value>org.kingsteff.passwordsave.PersonalpasssaveApplication</param-value>

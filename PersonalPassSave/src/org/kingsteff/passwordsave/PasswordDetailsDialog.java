@@ -51,7 +51,9 @@ public class PasswordDetailsDialog extends Window {
 				} else {
 
 					new GeneralNotification("No Websiteentry URL found.", true,
-							GeneralNotification.ERROR_MESSAGE).show();
+							GeneralNotification.ERROR_MESSAGE,
+							PersonalpasssaveApplication.getInstance()
+									.getBaseController()).show();
 				}
 			}
 

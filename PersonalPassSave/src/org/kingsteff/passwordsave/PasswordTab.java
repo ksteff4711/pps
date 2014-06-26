@@ -163,7 +163,9 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 
 					new GeneralNotification(
 							"Invalid character in length field", true,
-							GeneralNotification.ERROR_MESSAGE).show();
+							GeneralNotification.ERROR_MESSAGE,
+							PersonalpasssaveApplication.getInstance()
+									.getBaseController()).show();
 				}
 			}
 		});
@@ -591,14 +593,18 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 					} else {
 
 						new GeneralNotification("Passwords not consistent",
-								true, GeneralNotification.ERROR_MESSAGE).show();
+								true, GeneralNotification.ERROR_MESSAGE,
+								PersonalpasssaveApplication.getInstance()
+										.getBaseController()).show();
 					}
 
 				} catch (Exception e) {
 
 					e.printStackTrace();
 					new GeneralNotification("Creation failed", true,
-							GeneralNotification.ERROR_MESSAGE).show();
+							GeneralNotification.ERROR_MESSAGE,
+							PersonalpasssaveApplication.getInstance()
+									.getBaseController()).show();
 				}
 			}
 		});

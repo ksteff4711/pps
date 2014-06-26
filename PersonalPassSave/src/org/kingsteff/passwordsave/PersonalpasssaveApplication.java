@@ -1,10 +1,8 @@
 package org.kingsteff.passwordsave;
 
-import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-@Theme("dashboard")
 public class PersonalpasssaveApplication extends UI {
 	/**
 	 * 
@@ -14,6 +12,7 @@ public class PersonalpasssaveApplication extends UI {
 	private LoginManager loginManager;
 	private PasswordManager passwordManager;
 	private FileArchiveController fileArchiveController;
+	private LoginDialog dialog;
 
 	@Override
 	public void init(VaadinRequest request) {
@@ -21,9 +20,17 @@ public class PersonalpasssaveApplication extends UI {
 		baseController = new BaseController();
 		passwordManager = new PasswordManager();
 		fileArchiveController = new FileArchiveController();
-		LoginDialog dialog = new LoginDialog();
+		dialog = new LoginDialog();
 
 		addWindow(dialog);
+	}
+
+	public LoginDialog getDialog() {
+		return dialog;
+	}
+
+	public void setDialog(LoginDialog dialog) {
+		this.dialog = dialog;
 	}
 
 	public LoginManager getLoginManager() {
