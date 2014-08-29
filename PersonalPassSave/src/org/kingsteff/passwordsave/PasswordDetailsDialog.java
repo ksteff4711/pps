@@ -29,9 +29,14 @@ public class PasswordDetailsDialog extends Window {
 	private TextField labelField;
 	private TextArea commentArea;
 	private TextField loginfield;
+	private TextField generatorlength;
+	
 	private final AbsoluteLayout layout = new AbsoluteLayout();
 	
 	private Button saveButton;
+	
+	private Button generatorButton;
+	private TextField randomPasswordLenghtTextfield;
 
 	public PasswordDetailsDialog(String password, String login,
 			final String website, String comment) {
@@ -73,8 +78,39 @@ public class PasswordDetailsDialog extends Window {
 		openWebsite.addStyleName(Runo.BUTTON_SMALL);
 		close = new Button();
 		close.setCaption("close");
+		close.setIcon(new ThemeResource(
+				"../runo/icons/16/cancel.png"));
 		saveButton = new Button();
 		saveButton.setCaption("save");
+		saveButton.setIcon(new ThemeResource(
+				"../runo/icons/16/ok.png"));
+		generatorButton = new Button();
+		generatorButton.setIcon(new ThemeResource(
+				"../runo/icons/16/reload.png"));
+		
+		generatorButton.addClickListener(new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+
+				try {
+					String string = randomPasswordLenghtTextfield.getValue()
+							.toString();
+					passwordArea.setValue(PersonalpasssaveApplication.getInstance().getPasswordManager()
+							.generateRandomPassword(Integer.parseInt(string),
+									false));
+				} catch (Exception e) {
+
+					new GeneralNotification(
+							"Invalid character in length field", true,
+							GeneralNotification.ERROR_MESSAGE,
+							PersonalpasssaveApplication.getInstance()
+									.getBaseController()).show();
+				}
+			}
+		});
+		
+		
+		
 		loginfield = new TextField();
 		loginfield.setCaption("Login:");
 		loginfield.setWidth("350px");
@@ -93,6 +129,15 @@ public class PasswordDetailsDialog extends Window {
 		labelField = new TextField();
 		labelField.setWidth("350px");
 		labelField.setCaption("Label:");
+		
+		
+		randomPasswordLenghtTextfield = new TextField();
+		randomPasswordLenghtTextfield.setCaption("Password Length");
+		randomPasswordLenghtTextfield.setValue("12");
+		randomPasswordLenghtTextfield.setWidth("35px");
+		randomPasswordLenghtTextfield.setImmediate(true);
+		
+		
 
 		layout.addComponent(labelField, "top:15.0px;left:10.0px;");
 		layout.addComponent(loginfield, "top:60.0px;left:10.0px;");
@@ -101,9 +146,11 @@ public class PasswordDetailsDialog extends Window {
 		layout.addComponent(commentArea, "top:190.0px;left:10.0px;");
 		layout.addComponent(passwordArea, "top:290.0px;left:10.0px;");
 		if(isNewItemLayout){
-			layout.addComponent(saveButton, "top:410.0px;left:10.0px;");
+			layout.addComponent(saveButton, "top:410.0px;left:80.0px;");
+			layout.addComponent(generatorButton, "top:410.0px;left:160.0px;");
+			layout.addComponent(randomPasswordLenghtTextfield, "top:410.0px;left:250.0px;");
 		}
-		layout.addComponent(close, "top:410.0px;left:80.0px;");
+		layout.addComponent(close, "top:410.0px;left:10.0px;");
 
 		setContent(layout);
 		passwordArea.setValue(password);
@@ -157,8 +204,8 @@ public class PasswordDetailsDialog extends Window {
 		infos.setCreationdate(new Date());
 		infos.setId(BaseController.generaterandomId());
 		infos.setLabel(labelField.getValue());
-		infos.setLogin(login);
-		infos.setPassword(password);
+		infos.setLogin(loginfield.getValue());
+		infos.setPassword(passwordArea.getValue());
 		infos.setWebsite(websiteField.getValue());
 		return infos;
 	}

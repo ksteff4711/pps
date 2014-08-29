@@ -503,8 +503,10 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						addItem(detailsDialog.getPasswordInfos());
+						detailsDialog.close();
 					}
 				});
+		
 	}
 	
 	
@@ -531,8 +533,8 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		itemPropertyID.setValue(newPassword.getId());
 		Property itemPropertyWebsite = item.getItemProperty("Website");
 		itemPropertyWebsite.setValue(newPassword.getWebsite());
-		editTable(addItem);
 		passtable.setCurrentPageFirstItemId(addItem);
+		saveChanges();
 	}
 
 	private void editTable(final Object newItemId) {
