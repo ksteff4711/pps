@@ -71,6 +71,7 @@ public class BaseController {
 		PersonalpasssaveApplication.getInstance().setContent(window);
 		PersonalpasssaveApplication.getInstance().getLoginManager()
 				.removeUserAttempts(username);
+		PersonalpasssaveApplication.getInstance().getDialog().close();
 	}
 
 	public void notificationReturned() {

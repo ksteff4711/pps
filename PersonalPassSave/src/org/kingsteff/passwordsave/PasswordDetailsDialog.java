@@ -1,5 +1,7 @@
 package org.kingsteff.passwordsave;
 
+import java.util.Date;
+
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
@@ -18,21 +20,30 @@ public class PasswordDetailsDialog extends Window {
 	private String password;
 	private String login;
 
-	private final Button close;
+	private Button close;
 
-	private final Button openWebsite;
+	private Button openWebsite;
 
-	private final TextArea passwordArea;
-	private final TextField websiteField;
-	private final TextArea commentArea;
-	private final TextField loginfield;
+	private TextArea passwordArea;
+	private TextField websiteField;
+	private TextField labelField;
+	private TextArea commentArea;
+	private TextField loginfield;
 	private final AbsoluteLayout layout = new AbsoluteLayout();
+	
+	private Button saveButton;
 
 	public PasswordDetailsDialog(String password, String login,
 			final String website, String comment) {
 		super();
 		this.password = password;
 		this.login = login;
+		initWindow(password, login, website, comment, false);
+
+	}
+
+	private void initWindow(String password, String login,
+			final String website, String comment, boolean isNewItemLayout) {
 		websiteField = new TextField();
 		websiteField.setCaption("Website");
 		openWebsite = new Button();
@@ -62,6 +73,8 @@ public class PasswordDetailsDialog extends Window {
 		openWebsite.addStyleName(Runo.BUTTON_SMALL);
 		close = new Button();
 		close.setCaption("close");
+		saveButton = new Button();
+		saveButton.setCaption("save");
 		loginfield = new TextField();
 		loginfield.setCaption("Login:");
 		loginfield.setWidth("350px");
@@ -76,13 +89,21 @@ public class PasswordDetailsDialog extends Window {
 		passwordArea.setCaption("current Password:");
 		passwordArea.setWidth("350px");
 		passwordArea.setHeight("100px");
+		
+		labelField = new TextField();
+		labelField.setWidth("350px");
+		labelField.setCaption("Label:");
 
-		layout.addComponent(loginfield, "top:15.0px;left:10.0px;");
-		layout.addComponent(websiteField, "top:60.0px;left:10.0px;");
-		layout.addComponent(openWebsite, "top:60.0px;left:280.0px;");
-		layout.addComponent(commentArea, "top:120.0px;left:10.0px;");
-		layout.addComponent(passwordArea, "top:190.0px;left:10.0px;");
-		layout.addComponent(close, "top:310.0px;left:10.0px;");
+		layout.addComponent(labelField, "top:15.0px;left:10.0px;");
+		layout.addComponent(loginfield, "top:60.0px;left:10.0px;");
+		layout.addComponent(websiteField, "top:120.0px;left:10.0px;");
+		layout.addComponent(openWebsite, "top:120.0px;left:280.0px;");
+		layout.addComponent(commentArea, "top:190.0px;left:10.0px;");
+		layout.addComponent(passwordArea, "top:290.0px;left:10.0px;");
+		if(isNewItemLayout){
+			layout.addComponent(saveButton, "top:410.0px;left:10.0px;");
+		}
+		layout.addComponent(close, "top:410.0px;left:80.0px;");
 
 		setContent(layout);
 		passwordArea.setValue(password);
@@ -90,8 +111,11 @@ public class PasswordDetailsDialog extends Window {
 		commentArea.setValue(comment);
 		websiteField.setValue(website);
 		setWidth("450px");
-		setHeight("400px");
+		setHeight("600px");
+	}
 
+	public PasswordDetailsDialog() {
+		initWindow("", "", "", "", true);
 	}
 
 	public Button getClose() {
@@ -120,6 +144,23 @@ public class PasswordDetailsDialog extends Window {
 
 	public TextField getLoginfield() {
 		return loginfield;
+	}
+
+	public Button getSaveButton() {
+		return saveButton;
+		
+	}
+
+	public PasswordInfos getPasswordInfos() {
+		PasswordInfos infos = new PasswordInfos();
+		infos.setComment(commentArea.getValue());
+		infos.setCreationdate(new Date());
+		infos.setId(BaseController.generaterandomId());
+		infos.setLabel(labelField.getValue());
+		infos.setLogin(login);
+		infos.setPassword(password);
+		infos.setWebsite(websiteField.getValue());
+		return infos;
 	}
 
 }

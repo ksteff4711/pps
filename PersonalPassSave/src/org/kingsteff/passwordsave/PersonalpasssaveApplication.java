@@ -1,8 +1,10 @@
 package org.kingsteff.passwordsave;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
+@Theme("personalpasssavetheme")
 public class PersonalpasssaveApplication extends UI {
 	/**
 	 * 
