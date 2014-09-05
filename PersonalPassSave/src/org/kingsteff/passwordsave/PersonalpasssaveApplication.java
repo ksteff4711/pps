@@ -4,7 +4,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-@Theme("personalpasssavetheme")
+@Theme("pps")
 public class PersonalpasssaveApplication extends UI {
 	/**
 	 * 

@@ -210,7 +210,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 				if (!generateRandomPassword.isVisible()) {
 					removeComponent(activateGenerator);
 					activateGeneratorLabel.setIcon(new ThemeResource(
-							"../runo/icons/16/cancel.png"));
+							"../pps/images/cancel.png"));
 					activateGeneratorLabel.setValue("close");
 
 					generateRandomPassword.setVisible(true);
@@ -221,7 +221,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 				} else {
 					removeComponent(activateGenerator);
 					activateGeneratorLabel.setIcon(new ThemeResource(
-							"../pps/images/generator.png"));
+							"../pps/images/generator_small.png"));
 					activateGeneratorLabel.setValue("Generator");
 					generateRandomPassword.setVisible(false);
 					randomPasswordTextfield.setVisible(false);
@@ -387,7 +387,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		addButton.setWidth("-1px");
 		addButton.setHeight("-1px");
 		addButton
-				.setIcon(new ThemeResource("../runo/icons/16/document-add.png"));
+				.setIcon(new ThemeResource("../pps/images/plus.png"));
 		addButton.addStyleName(Runo.BUTTON_SMALL);
 		addComponent(addButton, "top:40.0px;left:20.0px;");
 
@@ -398,9 +398,9 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		removeButton.setWidth("-1px");
 		removeButton.setHeight("-1px");
 		removeButton.setIcon(new ThemeResource(
-				"../runo/icons/16/document-delete.png"));
+				"../pps/images/trash.png"));
 		removeButton.addStyleName(Runo.BUTTON_SMALL);
-		addComponent(removeButton, "top:40.0px;left:90.0px;");
+		addComponent(removeButton, "top:40.0px;left:105.0px;");
 
 		// editButton
 		editButton = new Button();
@@ -410,7 +410,17 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		editButton.setHeight("-1px");
 		editButton.setIcon(new ThemeResource("../pps/images/edit.png"));
 		editButton.addStyleName(Runo.BUTTON_SMALL);
-		addComponent(editButton, "top:40.0px;left:190.0px;");
+		addComponent(editButton, "top:40.0px;left:220.0px;");
+		
+		changePassword = new Button();
+		changePassword.setCaption("my password");
+		changePassword.setImmediate(true);
+		changePassword.setWidth("-1px");
+		changePassword.setHeight("-1px");
+		changePassword.addStyleName(Runo.BUTTON_SMALL);
+		changePassword.setIcon(new ThemeResource("../pps/images/lock.png"));
+		addComponent(changePassword, "top:40.0px;left:305.0px;");
+		changePassword.setVisible(true);
 
 		// editButton
 		userManagement = new Button();
@@ -418,10 +428,10 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		userManagement.setImmediate(false);
 		userManagement.setWidth("-1px");
 		userManagement.setHeight("-1px");
-		userManagement.setIcon(new ThemeResource("../runo/icons/16/users.png"));
+		userManagement.setIcon(new ThemeResource("../pps/images/user.png"));
 		if (PersonalpasssaveApplication.getInstance().getBaseController()
 				.getCurrentUser().equals("admin")) {
-			addComponent(userManagement, "top:40.0px;left:380.0px;");
+			addComponent(userManagement, "top:40.0px;left:450.0px;");
 		}
 		userManagement.addStyleName(Runo.BUTTON_SMALL);
 
@@ -430,21 +440,20 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		logout.setImmediate(false);
 		logout.setWidth("-1px");
 		logout.setHeight("-1px");
-		logout.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
+		logout.setIcon(new ThemeResource("../pps/images/logout.png"));
 		addComponent(logout, "top:40.0px;left:900.0px;");
 		logout.addStyleName(Runo.BUTTON_SMALL);
 
 		generateRandomPassword = new Button();
-		generateRandomPassword.setCaption("generate");
+		generateRandomPassword.setIcon(new ThemeResource("../pps/images/reload.png"));
 		generateRandomPassword.setImmediate(true);
 		generateRandomPassword.setWidth("-1px");
 		generateRandomPassword.setHeight("-1px");
 		addComponent(generateRandomPassword, "top:130.0px;left:220.0px;");
 		generateRandomPassword.setVisible(false);
-		generateRandomPassword.addStyleName(Runo.BUTTON_SMALL);
+		//generateRandomPassword.addStyleName(Runo.BUTTON_SMALL);
 
 		randomPasswordTextfield = new TextField();
-		randomPasswordTextfield.setCaption("Random Password Generator");
 		randomPasswordTextfield.setWidth("200px");
 		randomPasswordTextfield.setImmediate(true);
 		addComponent(randomPasswordTextfield, "top:130.0px;left:20.0px;");
@@ -462,26 +471,18 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		specialCharacters.setCaption("Special Chars?");
 		specialCharacters.setValue(Boolean.valueOf("true"));
 		specialCharacters.setImmediate(true);
-		addComponent(specialCharacters, "top:130.0px;left:365.0px;");
+		addComponent(specialCharacters, "top:130.0px;left:480.0px;");
 		specialCharacters.setVisible(false);
 
 		activateGenerator = new HorizontalLayout();
 		activateGeneratorLabel = new Label();
 		activateGeneratorLabel.setIcon(new ThemeResource(
-				"../pps/images/generator.png"));
+				"../pps/images/generator_small.png"));
 		activateGeneratorLabel.setValue("Generator");
 		activateGenerator.addComponent(activateGeneratorLabel);
 		addComponent(activateGenerator, "top:80.0px;left:20.0px;");
 
-		changePassword = new Button();
-		changePassword.setCaption("my password");
-		changePassword.setImmediate(true);
-		changePassword.setWidth("-1px");
-		changePassword.setHeight("-1px");
-		changePassword.addStyleName(Runo.BUTTON_SMALL);
-		changePassword.setIcon(new ThemeResource("../runo/icons/16/lock.png"));
-		addComponent(changePassword, "top:40.0px;left:260.0px;");
-		changePassword.setVisible(true);
+
 
 	}
 
