@@ -9,10 +9,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UsersWrapper {
 
 	@XmlElement
-	public HashMap<String, String> userPasses = new HashMap<String, String>();
+	private HashMap<String, String> userPasses = new HashMap<String, String>();
 
 	@XmlElement
-	public HashMap<String, Integer> userLoginCounts = new HashMap<String, Integer>();
+	private HashMap<String, Integer> userLoginCounts = new HashMap<String, Integer>();
 
 	public HashMap<String, String> getUserPasses() {
 		return userPasses;

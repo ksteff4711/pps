@@ -27,6 +27,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
 
@@ -50,6 +52,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 	
 	private Button settings;
 	private Button export;
+	private Button importButton;
 
 	private PasswordTab self = null;
 	private Object currentChoosenID;
@@ -173,6 +176,12 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 			}
 		});
 
+		importButton.addClickListener(new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				importData();
+			}
+		});
 		
 		removeButton.addClickListener(new Button.ClickListener() {
 			@Override
@@ -262,10 +271,31 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 	}
 
 	protected void exportData() {
-		PasswordManager manager = new PasswordManager();
-		File generateCsvFile = manager.generateCsvFile(PersonalPassConstants.MAINDIR+"tmp/"+System.currentTimeMillis()+"_exp.csv");
+		File neDirs = new File(PersonalPassConstants.MAINDIR+"tmp/");
+		neDirs.mkdirs();
+		File generateCsvFile = PersonalpasssaveApplication.getInstance().getPasswordManager().generateCsvFile(PersonalPassConstants.MAINDIR+"tmp/"+System.currentTimeMillis()+"_exp.csv");
 		FileResource fr = new FileResource(generateCsvFile);
 		PersonalpasssaveApplication.getInstance().getPage().open(fr, "Export", true);
+	}
+	
+	private void importData(){
+		
+		Window uploadDataWindow = new Window();
+		Upload up = new Upload();
+		VerticalLayout vlayot = new VerticalLayout();
+		vlayot.setWidth("100%");
+		vlayot.setHeight("200px");
+		vlayot.addComponent(up);
+		ImportUploadHandler upHandler = new ImportUploadHandler();
+		up.setCaption("import file");
+		up.addListener((Upload.SucceededListener) upHandler);
+		up.addListener((Upload.FailedListener) upHandler);
+		up.setReceiver((Upload.Receiver) upHandler);
+		uploadDataWindow.setContent(vlayot);
+		
+		PersonalpasssaveApplication.getInstance().addWindow(uploadDataWindow);
+		uploadDataWindow.setModal(true);
+		uploadDataWindow.center();
 	}
 
 	protected void showSettings() {
@@ -316,7 +346,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 			newInfos.setCreationdate((Date) itemPropertyCreationDate.getValue());
 			newInfos.setId(itemPropertyID.getValue().toString());
 
-			allPasswordsForUser.passwords.put(itemPropertyID.toString(),
+			allPasswordsForUser.getPasswords().put(itemPropertyID.toString(),
 					newInfos);
 			System.out.println("for -->" + itemPropertyID.toString());
 
@@ -331,7 +361,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 
 	private void loadDataForCurrentUser() {
 		passtable.removeAllItems();
-		manager = new PasswordManager();
+		manager = PersonalpasssaveApplication.getInstance().getPasswordManager();
 		try {
 			allPasswordsForUser = manager
 					.getAllPasswordsForUser(PersonalpasssaveApplication
@@ -341,7 +371,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 			int counter = 0;
 
 			ArrayList<PasswordInfos> valueSet = new ArrayList<PasswordInfos>(
-					allPasswordsForUser.passwords.values());
+					allPasswordsForUser.getPasswords().values());
 			Collections.sort(valueSet);
 			for (PasswordInfos current : valueSet) {
 				passtable.addItem(new Object[] {
@@ -372,19 +402,19 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 
 				int counter = 0;
 
-				for (Object current : allPasswordsForUser.passwords.keySet()) {
+				for (Object current : allPasswordsForUser.getPasswords().keySet()) {
 					passtable.addItem(new Object[] {
 							// current.getId(),
-							allPasswordsForUser.passwords.get(current).getId(),
-							allPasswordsForUser.passwords.get(current)
+							allPasswordsForUser.getPasswords().get(current).getId(),
+							allPasswordsForUser.getPasswords().get(current)
 									.getLabel(),
-							allPasswordsForUser.passwords.get(current)
+							allPasswordsForUser.getPasswords().get(current)
 									.getLogin(),
-							allPasswordsForUser.passwords.get(current)
+							allPasswordsForUser.getPasswords().get(current)
 									.getPassword(),
-							allPasswordsForUser.passwords.get(current)
+							allPasswordsForUser.getPasswords().get(current)
 									.getComment(),
-							allPasswordsForUser.passwords.get(current)
+							allPasswordsForUser.getPasswords().get(current)
 									.getWebsite(), }, new Integer(counter));
 					counter++;
 
@@ -494,13 +524,23 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		
 		
 		export = new Button();
-		export.setCaption("settings");
+		export.setCaption("export");
 		export.setImmediate(false);
 		export.setWidth("-1px");
 		export.setHeight("-1px");
-		export.setIcon(new ThemeResource("../pps/images/export.png"));
-		addComponent(settings, "top:150.0px;left:900.0px;");
+		export.setIcon(new ThemeResource("../pps/images/export.jpg"));
+		addComponent(export, "top:130.0px;left:900.0px;");
 
+		
+		importButton = new Button();
+		importButton.setCaption("import");
+		importButton.setImmediate(false);
+		importButton.setWidth("-1px");
+		importButton.setHeight("-1px");
+		importButton.setIcon(new ThemeResource("../pps/images/export.jpg"));
+		addComponent(importButton, "top:130.0px;left:1000.0px;");
+		
+		
 		generateRandomPassword = new Button();
 		generateRandomPassword.setIcon(new ThemeResource("../pps/images/reload.png"));
 		generateRandomPassword.setImmediate(true);

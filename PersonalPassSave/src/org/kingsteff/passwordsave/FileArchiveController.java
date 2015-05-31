@@ -44,8 +44,7 @@ public class FileArchiveController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ObjectMarshaller objectMarshaller = new ObjectMarshaller();
-		String xml = objectMarshaller.toXmlWithXStream(fileInStore);
+		String xml = PersonalpasssaveApplication.getInstance().getMarshaller().toXmlWithXStream(fileInStore);
 		writeFileToEncrytedFileInMetaDataFolder(xml);
 	}
 
@@ -169,8 +168,8 @@ public class FileArchiveController {
 					
 					
 					
-					ObjectMarshaller marshaller = new ObjectMarshaller();
-					Object fromXml = marshaller.fromXmlWithXStream(buff
+
+					Object fromXml = PersonalpasssaveApplication.getInstance().getMarshaller().fromXmlWithXStream(buff
 							.toString());
 					newFileInStore = (FileInStore) fromXml;
 					in.close();
@@ -219,8 +218,8 @@ public class FileArchiveController {
 					while ((read = in.read()) != -1) {
 						buff.append((char) read);
 					}
-					ObjectMarshaller marshaller = new ObjectMarshaller();
-					Object fromXml = marshaller.fromXmlWithXStream(buff
+
+					Object fromXml = PersonalpasssaveApplication.getInstance().getMarshaller().fromXmlWithXStream(buff
 							.toString());
 					newFileInStore = (FileInStore) fromXml;
 					in.close();
@@ -329,8 +328,8 @@ public class FileArchiveController {
 					while ((read = in.read()) != -1) {
 						buff.append((char) read);
 					}
-					ObjectMarshaller marshaller = new ObjectMarshaller();
-					Object fromXml = marshaller.fromXmlWithXStream(buff
+
+					Object fromXml = PersonalpasssaveApplication.getInstance().getMarshaller().fromXmlWithXStream(buff
 							.toString());
 					newFileInStore = (FileInStore) fromXml;
 					in.close();

@@ -18,11 +18,13 @@ public class PersonalpasssaveApplication extends UI {
 	private PasswordManager passwordManager;
 	private FileArchiveController fileArchiveController;
 	private LoginDialog dialog;
+	private ObjectMarshaller marshaller;
 
 	@Override
 	public void init(VaadinRequest request) {
 		PersonalPassConstants.MAINDIR = VaadinServlet.getCurrent()
 		        .getServletContext().getRealPath("/")+"pps"+"/";
+		marshaller = new ObjectMarshaller();
 		loginManager = LoginManager.getInstance();
 		baseController = new BaseController();
 		passwordManager = new PasswordManager();
@@ -31,6 +33,14 @@ public class PersonalpasssaveApplication extends UI {
 		
 		
 		addWindow(dialog);
+	}
+
+	public ObjectMarshaller getMarshaller() {
+		return marshaller;
+	}
+
+	public void setMarshaller(ObjectMarshaller marshaller) {
+		this.marshaller = marshaller;
 	}
 
 	public LoginDialog getDialog() {

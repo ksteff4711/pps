@@ -42,7 +42,7 @@ public class LoginManager {
 
 	public boolean checkUsernamePassword(String username, String password) {
 		System.out.println("checkLogin:" + username + " " + password);
-		String string = wrapper.userPasses.get(username);
+		String string = wrapper.getUserPasses().get(username);
 		if (string == null) {
 			return false;
 		} else {
@@ -52,21 +52,21 @@ public class LoginManager {
 
 	public void removeUserAttempts(String username) {
 
-		wrapper.userLoginCounts.remove(username);
+		wrapper.getUserLoginCounts().remove(username);
 
 	}
 
 	public void increaseLoginCount(String username) {
-		Integer integer = wrapper.userLoginCounts.get(username);
+		Integer integer = wrapper.getUserLoginCounts().get(username);
 		if (integer == null) {
-			wrapper.userLoginCounts.put(username, new Integer(1));
+			wrapper.getUserLoginCounts().put(username, new Integer(1));
 		} else {
 			int newValue = 0;
 			try {
 				newValue = (integer.intValue() + 1);
-				wrapper.userLoginCounts.put(username, new Integer(newValue));
+				wrapper.getUserLoginCounts().put(username, new Integer(newValue));
 			} catch (Exception e) {
-				wrapper.userLoginCounts.put(username, new Integer(
+				wrapper.getUserLoginCounts().put(username, new Integer(
 						Integer.MAX_VALUE));
 			}
 
@@ -76,11 +76,11 @@ public class LoginManager {
 
 	public boolean checkIfUserhasReachedMaxLoginTries(String username) {
 		Integer integer;
-		if (wrapper.userLoginCounts != null) {
-			integer = wrapper.userLoginCounts.get(username);
+		if (wrapper.getUserLoginCounts() != null) {
+			integer = wrapper.getUserLoginCounts().get(username);
 		} else {
-			wrapper.userLoginCounts = new HashMap<String, Integer>();
-			integer = wrapper.userLoginCounts.get(username);
+			wrapper.setUserLoginCounts(new HashMap<String, Integer>());
+			integer = wrapper.getUserLoginCounts().get(username);
 			saveAllUsersToHdd();
 		}
 		if (integer == null) {
@@ -91,29 +91,29 @@ public class LoginManager {
 	}
 
 	public void addUser(String login, String password) {
-		wrapper.userPasses.put(login, password);
+		wrapper.getUserPasses().put(login, password);
 		saveAllUsersToHdd();
 	}
 
 	public void removeUser(String login) {
-		wrapper.userPasses.remove(login);
+		wrapper.getUserPasses().remove(login);
 		saveAllUsersToHdd();
 	}
 
 	public void resetUsersPassword(String username) {
-		wrapper.userPasses.put(username, "TEST12342012");
-		wrapper.userLoginCounts.remove(username);
+		wrapper.getUserPasses().put(username, "TEST12342012");
+		wrapper.getUserLoginCounts().remove(username);
 		saveAllUsersToHdd();
 	}
 
 	public void setUsersPassword(String login, String newPasssword) {
-		wrapper.userPasses.put(login, newPasssword);
+		wrapper.getUserPasses().put(login, newPasssword);
 		saveAllUsersToHdd();
 	}
 
 	public Vector<String> getAllUserNames() {
 		Vector<String> newUsers = new Vector<String>();
-		for (Object current : wrapper.userPasses.keySet()) {
+		for (Object current : wrapper.getUserPasses().keySet()) {
 			newUsers.add(current.toString());
 		}
 		return newUsers;
@@ -121,8 +121,8 @@ public class LoginManager {
 
 	private void saveAllUsersToHdd() {
 
-		ObjectMarshaller objectMarshaller = new ObjectMarshaller();
-		String xml = objectMarshaller.toXmlWithXStream(wrapper);
+
+		String xml = PersonalpasssaveApplication.getInstance().getMarshaller().toXmlWithXStream(wrapper);
 		writeFileToEncrytedFile(xml);
 	}
 
@@ -171,11 +171,11 @@ public class LoginManager {
 			while ((read = in.read()) != -1) {
 				buff.append((char) read);
 			}
-			ObjectMarshaller marshaller = new ObjectMarshaller();
-			Object fromXml = marshaller.fromXmlWithXStream(buff.toString());
+
+			Object fromXml = PersonalpasssaveApplication.getInstance().getMarshaller().fromXmlWithXStream(buff.toString());
 			wrapper = (UsersWrapper) fromXml;
-			if (wrapper.userPasses.isEmpty()) {
-				wrapper.userPasses.put("admin", "admin");
+			if (wrapper.getUserPasses().isEmpty()) {
+				wrapper.getUserPasses().put("admin", "admin");
 				saveAllUsersToHdd();
 			}
 		} catch (Exception e) {

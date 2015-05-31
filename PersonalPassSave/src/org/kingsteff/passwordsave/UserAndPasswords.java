@@ -9,27 +9,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserAndPasswords {
 
 	@XmlElement
-	public String login;
+	private String loginUP;
 	@XmlElement
-	public HashMap<String, PasswordInfos> passwords = new HashMap<String, PasswordInfos>();
+	private HashMap<String, PasswordInfos> passwordsList = new HashMap<String, PasswordInfos>();
 
 	public String getLogin() {
-		return login;
+		return loginUP;
 	}
 
 	public void setLogin(String login) {
-		this.login = login;
+		this.loginUP = login;
 	}
 
 	public HashMap<String, PasswordInfos> getPasswords() {
-		return passwords;
+		return passwordsList;
 	}
 
 	public void setPasswords(HashMap<String, PasswordInfos> passwords) {
-		this.passwords = passwords;
+		this.passwordsList = passwords;
 	}
 
 	public String toString() {
-		return ("User:" + login + " " + passwords.toString());
+		return ("User:" + loginUP + " " + passwordsList.toString());
 	}
 }
