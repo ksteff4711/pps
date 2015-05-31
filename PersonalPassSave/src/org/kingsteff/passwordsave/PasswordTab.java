@@ -1,5 +1,6 @@
 package org.kingsteff.passwordsave;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
@@ -45,6 +47,9 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 	private Button logout;
 
 	private Button userManagement;
+	
+	private Button settings;
+	private Button export;
 
 	private PasswordTab self = null;
 	private Object currentChoosenID;
@@ -65,7 +70,6 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		initButtons();
 		initTableData();
 		self = this;
-		// TODO add user code here
 	}
 
 	private void initTableData() {
@@ -104,7 +108,7 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 
 		passtable.addItemClickListener(doubleClickListener);
 		passtable.addValueChangeListener(this);
-		passtable.setStyleName("passtable");
+		//passtable.setStyleName("passtable");
 
 	}
 
@@ -146,14 +150,30 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 				showUserManagent();
 			}
 		});
+		
+		settings.addClickListener(new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				showSettings();
+			}
+		});
 
 		logout.addClickListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				PersonalpasssaveApplication.getInstance().close();
+				PersonalpasssaveApplication.getInstance().closeMe();
 			}
 		});
 
+		
+		export.addClickListener(new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				exportData();
+			}
+		});
+
+		
 		removeButton.addClickListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -239,6 +259,18 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 				changePasswordAction();
 			}
 		});
+	}
+
+	protected void exportData() {
+		PasswordManager manager = new PasswordManager();
+		File generateCsvFile = manager.generateCsvFile(PersonalPassConstants.MAINDIR+"tmp/"+System.currentTimeMillis()+"_exp.csv");
+		FileResource fr = new FileResource(generateCsvFile);
+		PersonalpasssaveApplication.getInstance().getPage().open(fr, "Export", true);
+	}
+
+	protected void showSettings() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void removeEntry() {
@@ -370,15 +402,15 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 
 		setImmediate(true);
 		setWidth("100%");
-		setHeight("1500px");
+		setHeight("1000px");
 
 		// passtable
 		passtable = new Table();
 		passtable.setCaption("Your current passwordlist");
 		passtable.setImmediate(true);
-		passtable.setHeight("-1px");
-		passtable.setWidth("-1px");
-		addComponent(passtable, "top:210.0px;left:20.0px; bottom:80px;");
+		
+		passtable.setHeight("700px");
+		addComponent(passtable, "top:210.0px;left:20.0px;");
 
 		// addButton
 		addButton = new Button();
@@ -434,6 +466,8 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 			addComponent(userManagement, "top:40.0px;left:450.0px;");
 		}
 		userManagement.addStyleName(Runo.BUTTON_SMALL);
+		
+		
 
 		logout = new Button();
 		logout.setCaption("logout");
@@ -443,6 +477,29 @@ public class PasswordTab extends AbsoluteLayout implements ValueChangeListener {
 		logout.setIcon(new ThemeResource("../pps/images/logout.png"));
 		addComponent(logout, "top:40.0px;left:900.0px;");
 		logout.addStyleName(Runo.BUTTON_SMALL);
+		
+		
+		settings = new Button();
+		settings.setCaption("settings");
+		settings.setImmediate(false);
+		settings.setWidth("-1px");
+		settings.setHeight("-1px");
+		settings.setIcon(new ThemeResource("../pps/images/settings2.png"));
+		if (PersonalpasssaveApplication.getInstance().getBaseController()
+				.getCurrentUser().equals("admin")) {
+			addComponent(settings, "top:80.0px;left:900.0px;");
+		}
+		settings.addStyleName(Runo.BUTTON_SMALL);
+		
+		
+		
+		export = new Button();
+		export.setCaption("settings");
+		export.setImmediate(false);
+		export.setWidth("-1px");
+		export.setHeight("-1px");
+		export.setIcon(new ThemeResource("../pps/images/export.png"));
+		addComponent(settings, "top:150.0px;left:900.0px;");
 
 		generateRandomPassword = new Button();
 		generateRandomPassword.setIcon(new ThemeResource("../pps/images/reload.png"));

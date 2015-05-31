@@ -108,6 +108,7 @@ public class FileArchiveController {
 				+ PasswordManager.getMd5Hash(PersonalpasssaveApplication
 						.getInstance().getBaseController().getCurrentUser())
 				+ "/");
+		System.out.println("HOME FILE::"+dir.getAbsolutePath());
 		File[] listFiles = dir.listFiles();
 		if (listFiles != null) {
 			for (File file : listFiles) {
@@ -164,6 +165,10 @@ public class FileArchiveController {
 					while ((read = in.read()) != -1) {
 						buff.append((char) read);
 					}
+		
+					
+					
+					
 					ObjectMarshaller marshaller = new ObjectMarshaller();
 					Object fromXml = marshaller.fromXmlWithXStream(buff
 							.toString());

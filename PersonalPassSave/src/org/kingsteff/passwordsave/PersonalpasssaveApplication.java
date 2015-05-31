@@ -2,9 +2,12 @@ package org.kingsteff.passwordsave;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 @Theme("pps")
+
 public class PersonalpasssaveApplication extends UI {
 	/**
 	 * 
@@ -18,12 +21,15 @@ public class PersonalpasssaveApplication extends UI {
 
 	@Override
 	public void init(VaadinRequest request) {
+		PersonalPassConstants.MAINDIR = VaadinServlet.getCurrent()
+		        .getServletContext().getRealPath("/")+"pps"+"/";
 		loginManager = LoginManager.getInstance();
 		baseController = new BaseController();
 		passwordManager = new PasswordManager();
 		fileArchiveController = new FileArchiveController();
 		dialog = new LoginDialog();
-
+		
+		
 		addWindow(dialog);
 	}
 
@@ -71,6 +77,10 @@ public class PersonalpasssaveApplication extends UI {
 	public BaseController getBaseController() {
 		// TODO Auto-generated method stub
 		return baseController;
+	}
+
+	public void closeMe() {
+		this.close();
 	}
 
 }

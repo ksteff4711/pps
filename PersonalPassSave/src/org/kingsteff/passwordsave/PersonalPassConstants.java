@@ -2,7 +2,7 @@ package org.kingsteff.passwordsave;
 
 public class PersonalPassConstants {
 
-	public static final String MAINDIR = "c:/temp/pps/";
+	public static String MAINDIR = "pps/";
 	public static final String FILESTORE_SUBDIR = "sdasdw/";
 	public static final String USERS_SUBDIR = "u11/";
 	public static final String FILES_METADATADIR = "MUUKKW12/";

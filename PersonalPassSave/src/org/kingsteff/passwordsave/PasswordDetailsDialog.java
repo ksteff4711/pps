@@ -134,23 +134,24 @@ public class PasswordDetailsDialog extends Window {
 		randomPasswordLenghtTextfield = new TextField();
 		randomPasswordLenghtTextfield.setCaption("Password Length");
 		randomPasswordLenghtTextfield.setValue("12");
-		randomPasswordLenghtTextfield.setWidth("35px");
+		randomPasswordLenghtTextfield.setWidth("45px");
 		randomPasswordLenghtTextfield.setImmediate(true);
 		
 		
 
-		layout.addComponent(labelField, "top:15.0px;left:10.0px;");
-		layout.addComponent(loginfield, "top:60.0px;left:10.0px;");
-		layout.addComponent(websiteField, "top:120.0px;left:10.0px;");
-		layout.addComponent(openWebsite, "top:120.0px;left:280.0px;");
-		layout.addComponent(commentArea, "top:190.0px;left:10.0px;");
-		layout.addComponent(passwordArea, "top:290.0px;left:10.0px;");
+		layout.addComponent(labelField, "top:25.0px;left:10.0px;");
+		layout.addComponent(loginfield, "top:80.0px;left:10.0px;");
+		layout.addComponent(websiteField, "top:160.0px;left:10.0px;");
+		layout.addComponent(openWebsite, "top:160.0px;left:280.0px;");
+		layout.addComponent(commentArea, "top:240.0px;left:10.0px;");
+		layout.addComponent(passwordArea, "top:320.0px;left:10.0px;");
 		if(isNewItemLayout){
-			layout.addComponent(saveButton, "top:410.0px;left:80.0px;");
-			layout.addComponent(generatorButton, "top:410.0px;left:160.0px;");
-			layout.addComponent(randomPasswordLenghtTextfield, "top:410.0px;left:250.0px;");
+			layout.addComponent(saveButton, "top:450.0px;left:120.0px;");
+			layout.addComponent(generatorButton, "top:450.0px;left:220.0px;");
+			layout.addComponent(randomPasswordLenghtTextfield, "top:450.0px;left:290.0px;");
+			openWebsite.setEnabled(false);
 		}
-		layout.addComponent(close, "top:410.0px;left:10.0px;");
+		layout.addComponent(close, "top:450.0px;left:10.0px;");
 
 		setContent(layout);
 		passwordArea.setValue(password);

@@ -1,9 +1,13 @@
 package org.kingsteff.passwordsave;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -13,6 +17,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
+
+import com.google.gwt.thirdparty.javascript.jscomp.parsing.parser.trees.GetAccessorTree;
 
 public class PasswordManager {
 
@@ -28,6 +34,7 @@ public class PasswordManager {
 		folder.delete();
 	}
 
+	@SuppressWarnings("resource")
 	public UserAndPasswords getAllPasswordsForUser(String username)
 			throws Exception {
 		String fileName = PersonalPassConstants.MAINDIR + getMd5Hash(username)
@@ -37,21 +44,27 @@ public class PasswordManager {
 
 		try {
 			CipherInputStream in;
-			OutputStream out;
 			Cipher cipher;
 			SecretKey key;
-			byte[] byteBuffer;
 			cipher = Cipher.getInstance(PersonalPassConstants.ENCRYPTION_MODE);
 			key = new SecretKeySpec(
 					PersonalPassConstants.MAIN_SCHLUSSEL.getBytes(),
 					PersonalPassConstants.ENCRYPTION_MODE);
 			cipher.init(Cipher.DECRYPT_MODE, key);
 			in = new CipherInputStream(new FileInputStream(fileName), cipher);
-			int read = 0;
+
+			// int read = 0;
 			StringBuffer buff = new StringBuffer();
-			while ((read = in.read()) != -1) {
-				buff.append((char) read);
+			// while ((read = in.read()) != -1) {
+			// buff.append((char) read);
+			// }
+			String line;
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(in));
+			while ((line = reader.readLine()) != null) {
+				buff.append(line);
 			}
+
 			ObjectMarshaller marshaller = new ObjectMarshaller();
 			Object fromXml = marshaller.fromXmlWithXStream(buff.toString());
 			UserAndPasswords wrapper = (UserAndPasswords) fromXml;
@@ -90,7 +103,7 @@ public class PasswordManager {
 							new FileOutputStream(fileName), cipher);
 					ObjectMarshaller marshaller = new ObjectMarshaller();
 					cip.write(marshaller.toXmlWithXStream(andPasswords)
-							.getBytes());
+							.getBytes("UTF8"));
 					cip.close();
 				} else {
 					UserAndPasswords allPasswordsForUser = getAllPasswordsForUser(login);
@@ -111,10 +124,11 @@ public class PasswordManager {
 							+ PersonalPassConstants.PASSWORDS_FILENAME_SUFFIX;
 					CipherOutputStream cip = new CipherOutputStream(
 							new FileOutputStream(fileName), cipher);
+					PrintWriter prt = new PrintWriter(new OutputStreamWriter(
+							cip, "UTF-8"));
 					ObjectMarshaller marshaller = new ObjectMarshaller();
-					cip.write(marshaller.toXmlWithXStream(allPasswordsForUser)
-							.getBytes());
-					cip.close();
+					prt.write(marshaller.toXmlWithXStream(allPasswordsForUser));
+					prt.close();
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -244,4 +258,58 @@ public class PasswordManager {
 		return result;
 	}
 
+	public File generateCsvFile(String sFileName) {
+		try {
+			FileWriter writer = new FileWriter(sFileName);
+
+			writer.append("login");
+			writer.append(',');
+			writer.append("password");
+			writer.append(',');
+			writer.append("location");
+			writer.append(',');
+			writer.append("comment");
+			writer.append(',');
+			writer.append("label");
+			writer.append(',');
+			writer.append("creationdate");
+			writer.append(',');
+			writer.append("userid");
+			writer.append(',');
+			writer.append("id");
+			writer.append(',');
+			writer.append("website");
+			writer.append('\n');
+			String currentUser = PersonalpasssaveApplication.getInstance()
+					.getBaseController().getCurrentUser();
+			UserAndPasswords allPasswordsForUser = getAllPasswordsForUser(currentUser);
+			for (String t : allPasswordsForUser.passwords.keySet()) {
+				PasswordInfos passwordInfos = allPasswordsForUser.passwords
+						.get(t);
+				writer.append(passwordInfos.getLogin());
+				writer.append(',');
+				writer.append(passwordInfos.getPassword());
+				writer.append(',');
+				writer.append(passwordInfos.getLocation());
+				writer.append(',');
+				writer.append(passwordInfos.getComment());
+				writer.append(',');
+				writer.append(passwordInfos.getLabel());
+				writer.append(',');
+				writer.append(passwordInfos.getCreationdate() + "");
+				writer.append(',');
+				writer.append(passwordInfos.getUserID() + "");
+				writer.append(',');
+				writer.append(passwordInfos.getId());
+				writer.append(',');
+				writer.append(passwordInfos.getWebsite());
+				writer.append('\n');
+			}
+			writer.flush();
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new File(sFileName);
+	}
 }
