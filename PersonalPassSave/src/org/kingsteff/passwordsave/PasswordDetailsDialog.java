@@ -208,6 +208,7 @@ public class PasswordDetailsDialog extends Window {
 		infos.setLogin(loginfield.getValue());
 		infos.setPassword(passwordArea.getValue());
 		infos.setWebsite(websiteField.getValue());
+		System.out.println(infos);
 		return infos;
 	}
 

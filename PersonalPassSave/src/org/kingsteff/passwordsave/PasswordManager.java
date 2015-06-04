@@ -275,8 +275,8 @@ public class PasswordManager {
 
 	public File generateCsvFile(String sFileName) {
 		try {
-			FileWriter writer = new FileWriter(sFileName);
-
+//			FileWriter writer = new FileWriter(sFileName);
+			PrintWriter writer = new PrintWriter( sFileName, "UTF-8" );
 			writer.append("login");
 			writer.append("§");
 			writer.append("password");
@@ -344,7 +344,8 @@ public class PasswordManager {
 					removePassword(passwordInfos.getId(), currentUser);
 				}
 			}
-			br = new BufferedReader(new FileReader(inputFile));
+			br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(inputFile), "UTF8"));
 			int linecounter = 0;
 			while ((line = br.readLine()) != null) {
 

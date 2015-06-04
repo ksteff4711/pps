@@ -6,7 +6,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-@Theme("pps")
+@Theme("personalpasssavetheme")
 
 public class PersonalpasssaveApplication extends UI {
 	/**
@@ -23,7 +23,7 @@ public class PersonalpasssaveApplication extends UI {
 	@Override
 	public void init(VaadinRequest request) {
 		PersonalPassConstants.MAINDIR = VaadinServlet.getCurrent()
-		        .getServletContext().getRealPath("/")+"pps"+"/";
+		        .getServletContext().getRealPath("/")+"../../pps"+"/";
 		marshaller = new ObjectMarshaller();
 		loginManager = LoginManager.getInstance();
 		baseController = new BaseController();
